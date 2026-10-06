@@ -106,7 +106,7 @@ Weights use fixed three-decimal kg precision as confirmed by the user. Drafts
 use company currency and generated references, support multiple lines and
 standard mail attachments. Calculated quantities are protected from direct
 write/import. Changing company after adding lines is prohibited. Draft, Inspection and Rejected states are implemented; commercial
-confirmation awaits its pricing snapshot feature; no financial or stock effects occur.
+confirmation/cancellation and currency/price snapshots are implemented; no financial or stock effects occur.
 
 Ruff uses the Odoo runbot configuration in ruff.toml and must pass before commits.
 
@@ -119,8 +119,9 @@ revalidate affected rules. Matching covers the whole chosen intake length
 interval and returns exactly one rule or a validation error. Company isolation
 and configuration-admin mutation permissions are enforced. Rates have no fixed
 quantity precision; payable weights remain three-decimal kg quantities. No real
-rates are seeded. Quote application, confirmation snapshots and override audit
-remain distinct pending features.
+rates are seeded. Manager quotation supplies reviewable currency/price/classification snapshots;
+confirmation verifies freshness and freezes them.
+The price override and audit interface remains pending.
 
 ## Seller intake history
 
@@ -141,3 +142,19 @@ States and provenance are assigned only by private action helpers; UI/RPC/import
 cannot supply protected values or forge context defaults. ORM row locks serialize
 parent actions and line edits. Standard chatter tracks approval/rejection/reset
 and attachments. No new stock or financial effects occur in this feature.
+
+## Commercial snapshots
+
+Manager/Admin confirmation requires approved inspection and one matching price
+rule per line. Rates and currency-rounded amounts are written to protected line
+snapshots; header currency is fixed through confirmed_currency_id and becomes
+independent of mutable company currency. Seller/classification labels and length
+bounds are copied for historical reference. Confirmation/retries use ORM parent
+locks. Invalid pricing does not partially confirm. Manager cancellation requires
+a reason, retains historical values, and has no stock/accounting/payment effects.
+Paid/Received cancellation awaits an explicit reversal workflow.
+
+Pricing review is an explicit Compute Price action before confirmation. Stored
+quote values/actor/date support review on the Commercial tab. Confirmation
+rechecks current pricing/classification/currency and refuses stale quotes;
+repricing requires another explicit action. Returning to draft clears quotes.

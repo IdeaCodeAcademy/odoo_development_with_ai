@@ -52,7 +52,7 @@
 - Server validation rejects negative/nonfinite weights and excessive deductions.
 - Company isolation, relation integrity and forged calculated values are tested.
 - Seven intake tests cover calculations, validation, permissions and view loading.
-- Inspection submission is implemented; confirmation and commercial effects remain pending.
+- Inspection submission and commercial confirmation are implemented; payment/stock effects remain pending.
 
 ## Phase 4 - Pricing Configuration/Selection Feature - Complete
 
@@ -63,8 +63,8 @@
 - Private quote API computes currency-rounded payable kg × rate.
 - Configuration admins mutate; hair users read; companies remain isolated.
 - Eight pricing tests pass. No real rates seeded in hair_demo.
-- Intake quote application, historical confirmation snapshots and override audit
-  remain pending; the entire Pricing Engine phase is not declared complete.
+- Confirmation now applies quotes and preserves historical snapshots. Price
+  override audit remains pending; the entire Pricing Engine phase is not declared complete.
 
 ## Seller Intake History Feature - Complete
 
@@ -86,14 +86,28 @@
 - Uses ORM row locks and standard chatter/attachments; no sudo or raw SQL.
 - Extended criterion configuration remains pending; no quality thresholds invented.
 
+## Commercial Confirmation/Cancellation Feature - Complete
+
+- Manager/Admin confirms only quality-approved, complete positive-kg intakes.
+- Exactly one applicable pricing rule required per line; missing prices fail atomically.
+- Explicit Compute Price records reviewable quotes and actor/time. Confirmation
+  rejects stale pricing/classification/currency until repriced and reviewed.
+- Rate/amount/rule, currency, seller/type/grade/length labels and bounds snapshot.
+- Confirmed values survive rule/name/length/company-currency configuration changes.
+- Direct snapshots/input forgery denied; copy creates a new unapproved draft.
+- Reasoned Manager cancellation retains actor/time and historical monetary values.
+- Repeated confirm/cancel calls retain original provenance; ORM parent row locking.
+- Nine tests pass, including quote freshness/reset; no actual payments/accounting/stock operations created.
+- Price override audit/UI remains a subsequent feature.
+
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 49 executed tests
-  (47 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_fb2503d230b1.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 58 executed tests
+  (56 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_0e4ef99bbefc.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
-- Environment and authenticated demo checks passed after history update.
+- Environment and authenticated demo checks passed after quality/confirmation update.
 - Demo history fields and seller-filtered action verified through authenticated RPC.
 
 ## Delegated workflow policy
@@ -104,14 +118,21 @@ grades. Confirmation requires seller, positive payable kg, hair type, length,
 approved grade and a valid pricing rule. Implement these server-enforced actions
 in later workflow features; this authorization resolves the role-policy blocker.
 
-## Exact blocker and required input
+## Pending business pricing data
 
-The business pricing configuration is missing: real
-price per kg by hair type/grade/length, and effective start dates. Requirements
-examples explicitly do not establish real prices. A question requesting these
-values has been sent. Currency was answered as MMK; rates/dates are still missing. No guessed commercial rates are activated.
+MMK and 0.001 kg resolution are confirmed. Real prices per kg by type/grade/length
+and effective dates remain missing. No real/sample rate rules are activated in
+hair_demo. Synthetic rates exercise development tests without guessing business
+prices; this data gap does not prevent independent workflow implementation.
 
-Supply the rate table (or explicitly authorize illustrative demo-only
-pricing) to activate and verify the commercial workflow against business pricing.
-Remaining work includes applying quotes and confirmation
-snapshots/override audit, confirmed seller purchase/value statistics, and later roadmap phases.
+## Exact blocker and required input for inventory integration
+
+Receipt/payment policy is not defined: may stock be received for confirmed
+unpaid/partially paid purchases, or only after full payment? A question presenting
+these two policies has been sent. This decision changes receipt state guards and
+is required before implementing stock receipt behavior.
+
+Required input: choose fully-paid-only receipt or confirmed unpaid/partial receipt.
+Remaining work: price override audit/UI, extended quality criteria, inventory/lot
+receipt after this policy, payment/accounting, confirmed seller statistics and
+later roadmap phases. No guessed receipt/reversal policy has been activated.

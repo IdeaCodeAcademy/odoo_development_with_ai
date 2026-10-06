@@ -44,10 +44,16 @@ action = rpc('/web/dataset/call_kw/res.partner/action_view_hair_intakes', {
 })
 assert action['domain'] == [['seller_id', '=', sellers[0]['id']]], 'Seller history filter incorrect'
 quality_fields = rpc('/web/dataset/call_kw/hair.purchase/fields_get', {
-    'model': 'hair.purchase', 'method': 'fields_get', 'args': [['state', 'quality_approved', 'inspector_id']], 'kwargs': {},
+    'model': 'hair.purchase', 'method': 'fields_get', 'args': [['state', 'quality_approved', 'inspector_id', 'confirmed_currency_id', 'quoted_date', 'amount_total']], 'kwargs': {},
 })
-assert {'draft', 'inspection', 'rejected'}.issubset({key for key, _label in quality_fields['state']['selection']})
+assert {'draft', 'inspection', 'rejected', 'confirmed', 'cancelled'}.issubset({key for key, _label in quality_fields['state']['selection']})
 assert quality_fields['quality_approved']['readonly'], 'Quality approval metadata must be readonly'
+assert quality_fields['confirmed_currency_id']['readonly'], 'Confirmed currency must be protected'
+form = rpc('/web/dataset/call_kw/hair.purchase/get_view', {
+    'model': 'hair.purchase', 'method': 'get_view', 'args': [], 'kwargs': {'view_type': 'form'},
+})
+assert 'action_confirm_purchase' in form['arch'], 'Commercial confirmation form unavailable'
+assert 'action_quote_purchase' in form['arch'], 'Pricing review form unavailable'
 user = rpc('/web/dataset/call_kw/res.users/read', {
     'model': 'res.users', 'method': 'read', 'args': [[session['uid']], ['company_id']], 'kwargs': {},
 })[0]

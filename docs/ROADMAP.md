@@ -31,8 +31,10 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
 - Phase 2 seller foundation and intake history are complete; confirmed purchase/value statistics remain.
 - Phase 3 draft intake, kg weights and inspection submission are implemented.
 - Phase 4 pricing configuration, selection and private quote calculation are
-  implemented; applying quotes, confirmation snapshots and override audit remain.
+  implemented; confirmation now applies quotes and snapshots. Price override audit remains.
 - Phase 5 inspection/grade approval/rejection foundation is implemented; extended
   criterion configuration remains pending.
+- Manager commercial confirmation/reasoned cancellation is implemented.
+- Inventory receipt needs payment/receipt policy before integration.
 - Later phases remain pending. See STATE.md for validated results and required
   business configuration; these feature milestones do not imply full release.

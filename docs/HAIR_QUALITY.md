@@ -1,7 +1,8 @@
 # Quality Inspection and Grade Approval
 
 The hair_purchase module provides Draft → Inspection and terminal Rejected states.
-Commercial confirmation, payments and stock receipt remain separate features.
+Commercial confirmation/cancellation is described in HAIR_CONFIRMATION.md.
+Payments and stock receipt remain pending.
 
 ## Buyer workflow
 

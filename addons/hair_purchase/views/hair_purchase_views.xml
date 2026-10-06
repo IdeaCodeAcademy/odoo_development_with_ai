@@ -15,11 +15,14 @@
                     <button name="action_approve_quality" string="Approve Quality" type="object" groups="hair_purchase.hair_purchase_group_quality" invisible="state != 'inspection' or quality_approved" class="oe_highlight"/>
                     <button name="action_reject_quality" string="Reject" type="object" groups="hair_purchase.hair_purchase_group_quality" invisible="state != 'inspection' or quality_approved"/>
                     <button name="action_return_to_draft" string="Return to Draft" type="object" groups="hair_supplier.hair_supplier_group_buyer" invisible="state != 'inspection'"/>
-                    <field name="state" widget="statusbar"/>
+                    <button name="action_quote_purchase" string="Compute Price" type="object" groups="hair_supplier.hair_supplier_group_manager" invisible="state != 'inspection' or not quality_approved"/>
+                    <button name="action_confirm_purchase" string="Confirm Purchase" type="object" class="oe_highlight" groups="hair_supplier.hair_supplier_group_manager" invisible="state != 'inspection' or not quality_approved"/>
+                    <button name="action_cancel_purchase" string="Cancel Purchase" type="object" groups="hair_supplier.hair_supplier_group_manager" invisible="state not in ('draft', 'inspection', 'confirmed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,inspection,confirmed"/>
                 </header>
                 <sheet>
                     <h1><field name="name"/></h1>
-                    <group><group><field name="company_id" readonly="state != 'draft'"/><field name="seller_id" readonly="state != 'draft'"/><field name="buyer_id" readonly="state != 'draft'"/></group><group><field name="date" readonly="state != 'draft'"/><field name="currency_id"/><field name="payable_weight"/></group></group>
+                    <group><group><field name="company_id" readonly="state != 'draft'"/><field name="seller_id" readonly="state != 'draft'"/><field name="buyer_id" readonly="state != 'draft'"/></group><group><field name="date" readonly="state != 'draft'"/><field name="currency_id"/><field name="payable_weight"/><field name="amount_total"/></group></group>
                     <notebook><page string="Hair and Weights" name="hair_weights">
                         <field name="line_ids" readonly="state != 'draft'"><list editable="bottom">
                             <field name="company_id" column_invisible="True"/>
@@ -40,7 +43,15 @@
                                 <field name="payable_weight"/><field name="proposed_grade_id"/><field name="grade_id"/>
                             </list>
                         </field>
-                    </page><page string="Notes" name="notes"><field name="notes"/></page></notebook>
+                    </page><page string="Commercial" name="commercial"><group>
+                        <field name="quoted_by_id"/><field name="quoted_date"/><field name="confirmed_by_id"/><field name="confirmed_date"/><field name="seller_name_snapshot"/>
+                        <field name="cancellation_reason" groups="hair_supplier.hair_supplier_group_manager" readonly="state not in ('draft', 'inspection', 'confirmed')"/>
+                        <field name="cancelled_by_id"/><field name="cancelled_date"/>
+                    </group><field name="line_ids" readonly="1"><list>
+                        <field name="currency_id" column_invisible="True"/>
+                        <field name="hair_type_snapshot"/><field name="grade_snapshot"/><field name="length_snapshot"/>
+                        <field name="pricing_rule_id"/><field name="price_per_kg"/><field name="amount"/>
+                    </list></field></page><page string="Notes" name="notes"><field name="notes"/></page></notebook>
                 </sheet><chatter/>
             </form>
         </field>
