@@ -86,3 +86,12 @@ assert company['currency_id'][1] == 'MMK', 'Demo company currency must be MMK'
 with opener.open(base_url + '/odoo', timeout=30) as response:
     assert response.status == 200
 _logger.info('Demo authentication, installed addons and web page checks passed')
+
+reports = rpc('/web/dataset/call_kw/ir.actions.report/search_read', {
+    'model': 'ir.actions.report', 'method': 'search_read',
+    'args': [[('report_name', '=', 'hair_purchase.purchase_receipt')]],
+    'kwargs': {'fields': ['report_type', 'binding_model_id', 'group_ids']},
+})
+assert len(reports) == 1 and reports[0]['report_type'] == 'qweb-pdf', 'Purchase PDF receipt unavailable'
+assert reports[0]['binding_model_id'] and reports[0]['group_ids'], 'Receipt binding/security unavailable'
+_logger.info('Purchase receipt report registration passed')

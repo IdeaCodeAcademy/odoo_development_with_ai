@@ -32,9 +32,9 @@ provenance/state writes and forged defaults are blocked. Purchases with any
 posted amount cannot be cancelled, including partial settlement, until a defined
 reversal workflow exists. Paid confirmation retries preserve existing values.
 
-Full payment is the prerequisite for the future inventory receipt integration.
+Full payment is the prerequisite for inventory receipt integration.
 Partial inventory/lot receipt is implemented by hair_inventory; reversals,
-QWeb receipts and accounting remain pending.
+separate payment vouchers and accounting remain pending. Purchase QWeb receipts are implemented; see HAIR_PURCHASE_RECEIPT.md.
 Seven payment tests exercise partial/full settlement, posting retry, overpayment,
 invalid precision/values, roles/NRC/company isolation, provenance/context forgery,
 immutable records/cancellation, views and duplicate request keys.

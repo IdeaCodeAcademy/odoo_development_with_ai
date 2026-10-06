@@ -102,9 +102,9 @@
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 88 executed tests
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 92 executed tests
   (86 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_be0f486bc8c1.
+- Isolated test database: hair_test_3ea695124065.
 - Final targeted inventory rerun: 15 tests, 0 failed, 0 errors.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
 - Environment and authenticated demo checks passed after inventory receipt update.
@@ -177,7 +177,7 @@ optional accounting, processing, dashboards and later roadmap phases.
   total/context forgery blocked; Cashiers cannot grade/change kg or access NRC.
 - Seven automated payment tests added. No real payment/provider or price data seeded.
 - Manual record posting does not transfer funds or create accounting entries.
-- Accounting bridge, QWeb receipts and reversals remain pending; inventory receipt is implemented below.
+- Accounting bridge, separate payment vouchers and reversals remain pending; inventory receipt is implemented below.
 
 ## Inventory product configuration feature
 
@@ -210,3 +210,18 @@ optional accounting, processing, dashboards and later roadmap phases.
   completion, limits/security/atomic failure/retries/immutability/returns.
 - No reversal or accounting policy inferred. Real prices/product/operation setup
   still required before recording actual business purchases.
+
+## Printable purchase receipt feature
+
+- Bound QWeb PDF receipt for Buyer/Manager/Admin and Cashier, with server-side
+  role and company read checks. Unconfirmed purchases cannot print.
+- Frozen seller/classification/rate values, 0.001 kg weights, currency amounts
+  and posted-only payment details; NRC and draft payments omitted.
+- Cancelled confirmed purchases print a prominent label and reason.
+- Explicit standard Odoo 20 base_report_wkhtmltox dependency; real PDF test
+  passes using public assets from the running Compose service.
+- Four report tests added. Full suite: 92 tests, zero failures/errors in
+  hair_test_3ea695124065; final confirmation/report rerun: 28 tests, zero
+  failures/errors, including rates with more than six decimal places. Ruff passes.
+  Demo upgraded; report registration, authentication and startup verified.
+- See HAIR_PURCHASE_RECEIPT.md for printing instructions and dependencies.

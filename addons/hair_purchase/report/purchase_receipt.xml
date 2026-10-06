@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_purchase_receipt" model="ir.actions.report">
+        <field name="name">Hair Purchase Receipt</field>
+        <field name="model">hair.purchase</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hair_purchase.purchase_receipt</field>
+        <field name="binding_model_id" ref="model_hair_purchase"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[Command.link(ref('hair_supplier.hair_supplier_group_buyer')), Command.link(ref('hair_purchase_group_cashier'))]"/>
+        <field name="print_report_name">'Hair Purchase - %s' % object.name</field>
+    </record>
+    <template id="purchase_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Hair Purchase Receipt</h2>
+                        <p><strong>Purchase:</strong> <span t-field="o.name"/></p>
+                        <p><strong>Date:</strong> <span t-field="o.date"/></p>
+                        <p><strong>Seller:</strong> <span t-field="o.seller_name_snapshot"/></p>
+                        <p><strong>Status:</strong> <span t-field="o.state"/></p>
+                        <div t-if="o.state == 'cancelled'" class="alert alert-danger"><strong>CANCELLED</strong> — <span t-field="o.cancellation_reason"/></div>
+                        <table class="table table-sm">
+                            <thead><tr><th>Hair Type</th><th>Grade</th><th>Length</th><th class="text-end">Payable kg</th><th class="text-end">Price / kg</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody><tr t-foreach="o.line_ids" t-as="line">
+                                <td><span t-field="line.hair_type_snapshot"/></td><td><span t-field="line.grade_snapshot"/></td><td><span t-field="line.length_snapshot"/></td>
+                                <td class="text-end"><span t-field="line.payable_weight" t-options="{'precision': 3}"/></td>
+                                <td class="text-end"><span t-out="line.price_per_kg"/> <span t-field="o.currency_id.name"/></td>
+                                <td class="text-end"><span t-field="line.amount"/></td>
+                            </tr></tbody>
+                        </table>
+                        <p class="text-end"><strong>Total payable kg:</strong> <span t-field="o.payable_weight" t-options="{'precision': 3}"/></p>
+                        <p class="text-end"><strong>Total:</strong> <span t-field="o.amount_total"/></p>
+                        <p class="text-end"><strong>Recorded payments:</strong> <span t-field="o.paid_amount"/></p>
+                        <p class="text-end"><strong>Balance:</strong> <span t-field="o.balance_amount"/></p>
+                        <p><strong>Payment status:</strong> <span t-field="o.payment_status"/></p>
+                        <t t-set="payments" t-value="o.payment_ids.filtered(lambda payment: payment.state == 'posted')"/>
+                        <table t-if="payments" class="table table-sm">
+                            <thead><tr><th>Payment date</th><th>Method</th><th>Reference</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody><tr t-foreach="payments" t-as="payment"><td><span t-field="payment.date"/></td><td><span t-field="payment.method_id.name"/></td><td><span t-field="payment.reference"/></td><td class="text-end"><span t-field="payment.amount"/></td></tr></tbody>
+                        </table>
+                        <p class="text-muted">Payment figures reflect posted payment records.</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

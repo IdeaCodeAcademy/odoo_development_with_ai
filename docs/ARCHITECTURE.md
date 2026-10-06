@@ -13,7 +13,7 @@ justification. Check version-dependent APIs against the installed Odoo source.
 | --- | --- | --- |
 | hair_base | base | Company-scoped types, textures, colors, grades and length definitions; master-data user/configuration groups |
 | hair_supplier | hair_base, contacts | Extend res.partner for seller identity/type and restricted information |
-| hair_purchase | hair_base, hair_supplier, mail | Purchase headers/lines, weights, inspection, pricing, confirmation, receipts |
+| hair_purchase | hair_supplier, mail, base_report_wkhtmltox | Purchase headers/lines, weights, inspection, pricing, confirmation, receipts |
 | hair_inventory | hair_purchase, stock | Standard stock receipt, lots and source purchase links |
 | hair_payment | hair_purchase, account | Optional accounting/payment bridge using standard accounting models |
 | hair_processing | hair_inventory, mrp | Standard manufacturing input/output lots, loss and yield |
@@ -198,3 +198,12 @@ received advances purchase to Received. Source transfers/lots/details are immuta
 linked returns await reversal policy. Stock Product Unit precision must be >=3.
 Seller and Cashier history includes Received. No valuation/accounting bridge is
 added; product valuation continues through standard Odoo configuration.
+
+## Purchase receipt report
+
+A bound QWeb PDF action uses frozen commercial snapshots and current posted
+payment records. Its custom report model checks Buyer/Cashier roles and ORM
+purchase read access without sudo, including company isolation. Unconfirmed
+intakes are rejected; cancelled confirmed purchases display a cancellation label.
+NRC and draft payments are omitted. Odoo 20 standard base_report_wkhtmltox
+provides the PDF engine. See HAIR_PURCHASE_RECEIPT.md.

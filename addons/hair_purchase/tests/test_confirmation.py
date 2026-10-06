@@ -441,3 +441,56 @@ class TestHairConfirmation(TransactionCase):
         with self.assertRaises(AccessError), self.cr.savepoint():
             payment.read(['amount', 'purchase_id'])
         self.assertEqual(payment.with_user(self.buyer).amount, 1)
+
+    def test_receipt_rendering_uses_frozen_values_and_posted_payments(self):
+        self.rule.price_per_kg = 123.456789123
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        cashier, method = self.cashier_and_method()
+        self.payment(purchase, cashier, method, 10, reference='Posted reference').action_post()
+        self.payment(purchase, cashier, method, 5, reference='Draft must be omitted')
+        self.seller.name = 'Changed Seller'
+        self.hair_type.name = 'Changed Type'
+        html, _format = self.env['ir.actions.report'].with_user(cashier)._render_qweb_html('hair_purchase.purchase_receipt', purchase.ids)
+        text = html.decode()
+        for expected in ('Original Seller', 'Original Type', 'Original Grade', 'Original Length', 'Posted reference', '0.601', '123.456789123'):
+            self.assertIn(expected, text)
+        for omitted in ('Changed Seller', 'Changed Type', 'Draft must be omitted', 'hair_identification'):
+            self.assertNotIn(omitted, text)
+
+    def test_receipt_report_roles_and_unconfirmed_guard(self):
+        purchase = self.intake()
+        report = self.env['ir.actions.report']
+        for user in (self.officer, self.env.ref('base.public_user'), self.env.ref('base.template_portal_user_id')):
+            with self.assertRaises(AccessError), self.cr.savepoint():
+                report.with_user(user)._render_qweb_html('hair_purchase.purchase_receipt', purchase.ids)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            report.with_user(self.buyer)._render_qweb_html('hair_purchase.purchase_receipt', purchase.ids)
+        purchase.action_confirm_purchase()
+        html, _format = report.with_user(self.buyer)._render_qweb_html('hair_purchase.purchase_receipt', purchase.ids)
+        self.assertIn(b'Hair Purchase Receipt', html)
+        company = self.env['res.company'].create({'name': 'Foreign Report Company'})
+        seller = self.env['res.partner'].create({'name': 'Foreign Report Seller', 'hair_is_seller': True, 'company_id': company.id})
+        foreign = self.env['hair.purchase'].create({'seller_id': seller.id, 'company_id': company.id})
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            report.with_user(self.buyer)._render_qweb_html('hair_purchase.purchase_receipt', foreign.ids)
+
+    def test_cancelled_purchase_receipt_is_explicit(self):
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        purchase.write({'cancellation_reason': 'Seller declined'})
+        purchase.action_cancel_purchase()
+        html, _format = self.env['ir.actions.report'].with_user(self.buyer)._render_qweb_html('hair_purchase.purchase_receipt', purchase.ids)
+        self.assertIn(b'CANCELLED', html)
+        self.assertIn(b'Seller declined', html)
+
+    def test_purchase_receipt_pdf_generation(self):
+        # Serve public report assets through the running development service.
+        self.env['ir.config_parameter'].sudo().set_str('report.url', 'http://web:8069')
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        pdf, report_type = self.env['ir.actions.report'].with_user(self.buyer).with_context(force_report_rendering=True)._render_qweb_pdf(
+            'hair_purchase.purchase_receipt', purchase.ids,
+        )
+        self.assertEqual(report_type, 'pdf')
+        self.assertTrue(pdf.startswith(b'%PDF'))

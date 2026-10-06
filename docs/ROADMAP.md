@@ -41,10 +41,13 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
   business configuration; these feature milestones do not imply full release.
 
 - Phase 7 manual partial/full payment tracking is implemented in hair_purchase.
-  Accounting bridge, payment/purchase QWeb receipts and reversals remain pending.
+  Accounting bridge, separate payment vouchers and reversals remain pending.
 
 - Phase 6 product mapping prerequisite implemented and verified. Partial receipts
   are authorized; receipt posting and purchase-to-lot traceability are implemented.
 
 - Phase 6 fully paid partial receipts, source lots, cumulative limits and complete
   Received state are implemented. Reversals await an explicit business policy.
+
+- Printable purchase QWeb PDF receipt implemented with frozen purchase values,
+  posted payment details, company/role guards and cancelled labels.

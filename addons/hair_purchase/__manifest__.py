@@ -5,7 +5,7 @@
     'summary': 'Hair intake, kilogram weights, pricing rules and quality inspection',
     'author': 'IdeaCode Academy',
     'license': 'LGPL-3',
-    'depends': ['hair_supplier', 'mail'],
+    'depends': ['hair_supplier', 'mail', 'base_report_wkhtmltox'],
     'data': [
         'security/hair_quality_groups.xml',
         'security/hair_payment_groups.xml',
@@ -17,6 +17,7 @@
         'views/hair_payment_views.xml',
         'views/hair_pricing_rule_views.xml',
         'views/res_partner_views.xml',
+        'report/purchase_receipt.xml',
     ],
     'installable': True,
 }
