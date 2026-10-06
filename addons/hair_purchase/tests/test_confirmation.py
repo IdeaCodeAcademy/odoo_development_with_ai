@@ -256,3 +256,53 @@ class TestHairConfirmation(TransactionCase):
         foreign = self.env['hair.purchase'].create({'seller_id': seller.id, 'company_id': company.id, 'line_ids': [Command.create({'gross_weight': 1})]})
         with self.assertRaises(AccessError), self.cr.savepoint():
             foreign.line_ids.with_user(self.manager).action_override_price(200, 'Foreign override')
+
+    def test_seller_confirmed_statistics_and_cancellation(self):
+        seller = self.seller.with_user(self.buyer)
+        draft = self.intake(approve=False)
+        purchase = self.intake()
+        self.assertEqual(seller.hair_purchase_count, 0)
+        self.assertFalse(seller.hair_purchase_value_summary)
+        purchase.line_ids.action_override_price(200, 'Seller negotiated rate')
+        purchase.action_confirm_purchase()
+        self.assertEqual(seller.hair_purchase_count, 1)
+        self.assertAlmostEqual(seller.hair_purchase_weight, .601)
+        self.assertEqual(seller.hair_last_purchase_date, purchase.date)
+        self.assertIn(self.company.currency_id.name, seller.hair_purchase_value_summary)
+        expected = f'{purchase.amount_total:.{self.company.currency_id.decimal_places}f}'
+        self.assertIn(expected, seller.hair_purchase_value_summary)
+        draft.line_ids.write({'gross_weight': 5})
+        self.assertAlmostEqual(seller.hair_purchase_weight, .601)
+        purchase.write({'cancellation_reason': 'Seller withdrew'})
+        purchase.action_cancel_purchase()
+        self.assertEqual(seller.hair_purchase_count, 0)
+        self.assertEqual(seller.hair_purchase_weight, 0)
+        self.assertFalse(seller.hair_last_purchase_date)
+        self.assertFalse(seller.hair_purchase_value_summary)
+
+    def test_seller_statistics_keep_historical_currencies_separate(self):
+        first = self.intake()
+        first.action_confirm_purchase()
+        old_currency = first.currency_id
+        new_currency = self.env['res.currency'].with_context(active_test=False).search([('id', '!=', old_currency.id)], limit=1)
+        new_currency.write({'active': True})
+        self.company.write({'currency_id': new_currency.id})
+        second = self.intake()
+        second.action_confirm_purchase()
+        seller = self.seller.with_user(self.buyer)
+        self.assertEqual(seller.hair_purchase_count, 2)
+        self.assertAlmostEqual(seller.hair_purchase_weight, 1.202)
+        self.assertIn(old_currency.name, seller.hair_purchase_value_summary)
+        self.assertIn(new_currency.name, seller.hair_purchase_value_summary)
+        self.assertIn('; ', seller.hair_purchase_value_summary)
+        action = seller.action_view_hair_purchases()
+        self.assertEqual(action['domain'], [('seller_id', '=', seller.id), ('state', '=', 'confirmed')])
+
+    def test_seller_commercial_statistics_security(self):
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        for user in (self.officer, self.env.ref('base.public_user'), self.env.ref('base.template_portal_user_id')):
+            with self.assertRaises(AccessError), self.cr.savepoint():
+                self.seller.with_user(user).read(['hair_purchase_count', 'hair_purchase_weight', 'hair_purchase_value_summary', 'hair_last_purchase_date'])
+            with self.assertRaises(AccessError), self.cr.savepoint():
+                self.seller.with_user(user).action_view_hair_purchases()

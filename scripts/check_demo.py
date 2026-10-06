@@ -36,13 +36,17 @@ assert seller_count >= 1, 'Demo seller not found'
 sellers = rpc('/web/dataset/call_kw/res.partner/search_read', {
     'model': 'res.partner', 'method': 'search_read',
     'args': [[('hair_is_seller', '=', True)]],
-    'kwargs': {'fields': ['hair_intake_count', 'hair_intake_weight', 'hair_last_intake_date'], 'limit': 1},
+    'kwargs': {'fields': ['hair_intake_count', 'hair_intake_weight', 'hair_last_intake_date', 'hair_purchase_count', 'hair_purchase_weight', 'hair_purchase_value_summary', 'hair_last_purchase_date'], 'limit': 1},
 })
 assert sellers and sellers[0]['hair_intake_count'] >= 0, 'Intake history fields unavailable'
 action = rpc('/web/dataset/call_kw/res.partner/action_view_hair_intakes', {
     'model': 'res.partner', 'method': 'action_view_hair_intakes', 'args': [[sellers[0]['id']]], 'kwargs': {},
 })
 assert action['domain'] == [['seller_id', '=', sellers[0]['id']]], 'Seller history filter incorrect'
+purchase_action = rpc('/web/dataset/call_kw/res.partner/action_view_hair_purchases', {
+    'model': 'res.partner', 'method': 'action_view_hair_purchases', 'args': [[sellers[0]['id']]], 'kwargs': {},
+})
+assert purchase_action['domain'] == [['seller_id', '=', sellers[0]['id']], ['state', '=', 'confirmed']]
 quality_fields = rpc('/web/dataset/call_kw/hair.purchase/fields_get', {
     'model': 'hair.purchase', 'method': 'fields_get', 'args': [['state', 'quality_approved', 'inspector_id', 'confirmed_currency_id', 'quoted_date', 'amount_total']], 'kwargs': {},
 })

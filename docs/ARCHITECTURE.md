@@ -132,7 +132,10 @@ hair_purchase extends res.partner with a seller-filtered intake action and group
 nonstored count/payable kg/last-date metrics. The grouped ORM query runs without
 sudo; fields and action require Buyer access. Dependencies invalidate totals when
 intakes, line weights or seller/date change. Draft metrics are labeled as intakes;
-confirmed purchased-weight/value statistics belong to the later commercial flow.
+confirmed purchase metrics use state=confirmed and exclude cancelled transactions.
+Count, kg and last purchase date are grouped with the caller permissions. Values
+are grouped by frozen confirmed currency, displayed separately without currency
+conversion. State/amount/currency changes invalidate these nonstored metrics.
 
 ## Quality workflow
 

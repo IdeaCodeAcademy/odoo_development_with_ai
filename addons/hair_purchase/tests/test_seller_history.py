@@ -57,7 +57,9 @@ class TestSellerIntakeHistory(TransactionCase):
         seller = self.env['res.partner'].create({'name': 'Foreign Seller', 'hair_is_seller': True, 'company_id': company.id})
         self.env['hair.purchase'].create({'seller_id': seller.id, 'company_id': company.id})
         with self.assertRaises(AccessError), self.cr.savepoint():
-            seller.with_user(self.buyer).read(['hair_intake_count'])
+            seller.with_user(self.buyer).read(['hair_intake_count', 'hair_purchase_count', 'hair_purchase_value_summary'])
         with self.assertRaises(AccessError), self.cr.savepoint():
             seller.with_user(self.buyer).action_view_hair_intakes()
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            seller.with_user(self.buyer).action_view_hair_purchases()
         self.assertEqual(self.seller.with_user(self.buyer).hair_intake_count, 0)

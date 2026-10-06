@@ -13,6 +13,44 @@ class ResPartner(models.Model):
     hair_last_intake_date = fields.Datetime('Last Intake', compute='_compute_hair_intake_statistics', compute_sudo=False,
                                           groups='hair_supplier.hair_supplier_group_buyer')
 
+    hair_purchase_count = fields.Integer('Confirmed Purchases', compute='_compute_hair_purchase_statistics',
+                                         compute_sudo=False, groups='hair_supplier.hair_supplier_group_buyer')
+    hair_purchase_weight = fields.Float('Purchased Weight (kg)', compute='_compute_hair_purchase_statistics',
+                                       digits=(16, 3), compute_sudo=False, groups='hair_supplier.hair_supplier_group_buyer')
+    hair_purchase_value_summary = fields.Char('Purchase Value by Currency', compute='_compute_hair_purchase_statistics',
+                                             compute_sudo=False, groups='hair_supplier.hair_supplier_group_buyer')
+    hair_last_purchase_date = fields.Datetime('Last Confirmed Purchase', compute='_compute_hair_purchase_statistics',
+                                             compute_sudo=False, groups='hair_supplier.hair_supplier_group_buyer')
+
+    @api.depends('hair_intake_ids', 'hair_intake_ids.state', 'hair_intake_ids.payable_weight',
+                 'hair_intake_ids.amount_total', 'hair_intake_ids.confirmed_currency_id', 'hair_intake_ids.date')
+    @api.depends_context('uid', 'company')
+    def _compute_hair_purchase_statistics(self):
+        rows = self.env['hair.purchase']._read_group(
+            [('seller_id', 'in', self.ids), ('state', '=', 'confirmed')],
+            ['seller_id', 'confirmed_currency_id'], ['__count', 'payable_weight:sum', 'amount_total:sum', 'date:max'],
+        )
+        statistics = {}
+        for seller, currency, count, weight, amount, date in rows:
+            entry = statistics.setdefault(seller.id, {'count': 0, 'weight': 0, 'date': False, 'values': []})
+            entry['count'] += count
+            entry['weight'] += weight
+            entry['date'] = max(entry['date'], date) if entry['date'] else date
+            entry['values'].append((currency.name, f"{currency.round(amount):.{currency.decimal_places}f} {currency.name}"))
+        for seller in self:
+            entry = statistics.get(seller.id, {'count': 0, 'weight': 0, 'date': False, 'values': []})
+            seller.hair_purchase_count = entry['count']
+            seller.hair_purchase_weight = entry['weight']
+            seller.hair_last_purchase_date = entry['date']
+            # Keep historical currencies separate; no guessed conversion rates.
+            seller.hair_purchase_value_summary = '; '.join(value for _currency, value in sorted(entry['values'])) or False
+
+    def action_view_hair_purchases(self):
+        action = self.action_view_hair_intakes()
+        action['domain'].append(('state', '=', 'confirmed'))
+        action['name'] = self.env._('Confirmed Hair Purchases')
+        return action
+
     @api.depends('hair_intake_ids', 'hair_intake_ids.payable_weight', 'hair_intake_ids.date')
     @api.depends_context('uid', 'company')
     def _compute_hair_intake_statistics(self):

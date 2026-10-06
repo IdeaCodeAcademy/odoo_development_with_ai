@@ -41,8 +41,7 @@
 - res.partner extension, configurable seller types and menus installed in hair_demo.
 - NRC protection verified for views, ORM reads/writes/search and imports.
 - Company isolation and unrelated contact permissions tested.
-- Seller intake history is implemented by hair_purchase; confirmed purchase/value
-  statistics still depend on the commercial workflow.
+- Seller intake history and confirmed purchase statistics are implemented by hair_purchase.
 
 ## Phase 3 - Draft Intake and Weight Feature - Complete
 
@@ -103,11 +102,11 @@
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 63 executed tests
-  (61 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_d42fb89e53a5.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 66 executed tests
+  (64 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_8d3cd9fad9eb.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
-- Environment and authenticated demo checks passed after price override update.
+- Environment and authenticated demo checks passed after seller statistics update.
 - Demo history fields and seller-filtered action verified through authenticated RPC.
 
 ## Delegated workflow policy
@@ -134,7 +133,7 @@ is required before implementing stock receipt behavior.
 
 Required input: choose fully-paid-only receipt or confirmed unpaid/partial receipt.
 Remaining work: extended quality criteria, inventory/lot
-receipt after this policy, payment/accounting, confirmed seller statistics and
+receipt after this policy, payment/accounting and
 later roadmap phases. No guessed receipt/reversal policy has been activated.
 
 ## Manager price override feature
@@ -147,3 +146,16 @@ later roadmap phases. No guessed receipt/reversal policy has been activated.
 - Same-rate retries are no-ops; confirmed/terminal rates remain immutable.
 - Five additional tests cover audit/retries, invalid rates/reasons, role/company
   isolation, forged provenance, stale rules/reset/copy and wizard/view access.
+
+## Seller confirmed purchase statistics feature
+
+- Buyer/Manager seller form includes confirmed purchase count, kg, last purchase
+  date and totals grouped by frozen historical currency without conversion.
+- Draft/inspection/rejected/cancelled purchases are excluded. State changes
+  invalidate metrics; negotiated prices contribute their confirmed amounts.
+- Purchases button filters seller and confirmed state using existing permissions.
+- Grouped ORM queries run as the caller without sudo or new access grants.
+- Automated tests cover lifecycle/reset, negotiated values, historical currencies,
+  action domain, role/public/portal denial and foreign-company seller access.
+- Future Paid/Received states must extend this confirmed-history domain when
+  implemented; those states are not currently installed.

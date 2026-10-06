@@ -28,7 +28,7 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
 ## Current feature progress
 
 - Phase 0 and Phase 1 are complete.
-- Phase 2 seller foundation and intake history are complete; confirmed purchase/value statistics remain.
+- Phase 2 seller foundation and intake history are complete; confirmed purchase count/kg/date and values by historical currency are implemented.
 - Phase 3 draft intake, kg weights and inspection submission are implemented.
 - Phase 4 pricing configuration, selection and private quote calculation are
   implemented; confirmation now applies quotes and snapshots. Manager price override and chatter audit are implemented; real rates await business configuration.

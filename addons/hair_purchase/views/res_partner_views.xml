@@ -9,10 +9,16 @@
                 <button name="action_view_hair_intakes" type="object" class="oe_stat_button" icon="fa-shopping-basket" groups="hair_supplier.hair_supplier_group_buyer" invisible="not hair_is_seller">
                     <field name="hair_intake_count" widget="statinfo" string="Intakes"/>
                 </button>
+                <button name="action_view_hair_purchases" type="object" class="oe_stat_button" icon="fa-check" groups="hair_supplier.hair_supplier_group_buyer" invisible="not hair_is_seller">
+                    <field name="hair_purchase_count" widget="statinfo" string="Purchases"/>
+                </button>
             </xpath>
             <xpath expr="//page[@name='hair_seller']/group" position="inside">
                 <field name="hair_intake_weight" invisible="not hair_is_seller"/>
                 <field name="hair_last_intake_date" invisible="not hair_is_seller"/>
+                <field name="hair_purchase_weight" invisible="not hair_is_seller"/>
+                <field name="hair_purchase_value_summary" invisible="not hair_is_seller"/>
+                <field name="hair_last_purchase_date" invisible="not hair_is_seller"/>
             </xpath>
         </field>
     </record>
