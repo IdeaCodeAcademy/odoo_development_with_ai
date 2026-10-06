@@ -51,7 +51,7 @@
 - Server validation rejects negative/nonfinite weights and excessive deductions.
 - Company isolation, relation integrity and forged calculated values are tested.
 - Seven intake tests cover calculations, validation, permissions and view loading.
-- Inspection submission and commercial confirmation are implemented; payment/stock effects remain pending.
+- Inspection, confirmation and manual payment tracking are implemented; stock/accounting effects remain pending.
 
 ## Phase 4 - Pricing Configuration/Selection Feature - Complete
 
@@ -102,11 +102,11 @@
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 66 executed tests
-  (64 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_8d3cd9fad9eb.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 73 executed tests
+  (71 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_a9aa01a67183.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
-- Environment and authenticated demo checks passed after seller statistics update.
+- Environment and authenticated demo checks passed after payment tracking update.
 - Demo history fields and seller-filtered action verified through authenticated RPC.
 
 ## Delegated workflow policy
@@ -130,13 +130,11 @@ The user answered that stock receipt before full payment is not permitted.
 Unpaid/partially paid purchases must be blocked; only confirmed, fully settled
 purchases may be received. The earlier receipt-policy question is resolved.
 
-Next dependency: implement payment tracking before inventory receipt and enforce
-full settlement through server-side receipt guards. Neither payment tracking nor
-stock receipt is implemented yet; this documentation change does not claim an
-active runtime receipt guard. Payment/stock reversal policy remains undefined;
+Next dependency: integrate inventory receipt with the implemented payment tracking and enforce
+full settlement through server-side receipt guards. Manual payment tracking is implemented; stock receipt is pending; stock receipt guards will be implemented with inventory. Payment/stock reversal policy remains undefined;
 paid/received cancellation must stay prohibited until a reversal workflow exists.
 Real rates/effective dates are still required to use the commercial demo flow.
-Remaining work: payment tracking, inventory/lot receipt, extended quality criteria,
+Remaining work: inventory/lot receipt, extended quality criteria,
 optional accounting, processing, dashboards and later roadmap phases.
 
 ## Manager price override feature
@@ -160,5 +158,23 @@ optional accounting, processing, dashboards and later roadmap phases.
 - Grouped ORM queries run as the caller without sudo or new access grants.
 - Automated tests cover lifecycle/reset, negotiated values, historical currencies,
   action domain, role/public/portal denial and foreign-company seller access.
-- Future Paid/Received states must extend this confirmed-history domain when
-  implemented; those states are not currently installed.
+- Paid purchases now contribute to confirmed history. Received must extend the
+  domain when inventory integration is implemented.
+
+## Manual payment tracking feature
+
+- Configurable company payment methods and separate Cashier role implemented.
+- Draft payment records preserve seller/currency/purchase, amount/date/method,
+  reference/notes; posting freezes actor/time and records chatter.
+- Partial/full balances and unpaid/partial/paid status; fully settled purchases
+  advance to Paid. Seller statistics include Paid purchases.
+- Positive finite currency-precision amounts, outstanding balance, active methods,
+  company access and confirmed state checked server-side under ORM parent locks.
+- Posting retries do not duplicate totals/provenance. Stable request keys have
+  database uniqueness; integrations must reuse their key on creation retries.
+- Posted payments cannot be mutated/deleted. Any posted payment blocks purchase
+  cancellation pending an explicit reversal policy. Direct state/provenance and
+  total/context forgery blocked; Cashiers cannot grade/change kg or access NRC.
+- Seven automated payment tests added. No real payment/provider or price data seeded.
+- Manual record posting does not transfer funds or create accounting entries.
+- Inventory receipt, accounting bridge, QWeb receipts and reversals remain pending.

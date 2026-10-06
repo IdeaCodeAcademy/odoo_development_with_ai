@@ -26,7 +26,7 @@ history returns zero totals and no date.
 ## Confirmed purchase history
 
 hair_purchase adds a Purchases button and confirmed count, purchased kg, last
-purchase date and purchase value summary. Only confirmed purchases contribute;
+purchase date and purchase value summary. Confirmed and Paid purchases contribute;
 cancelled and unconfirmed intakes remain in the separate Intakes history. Values
 retain each purchase's confirmed currency and are displayed separately when
 currencies differ. No exchange rates or conversions are inferred. Buyer/Manager

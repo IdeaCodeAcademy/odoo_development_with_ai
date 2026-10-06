@@ -20,15 +20,15 @@ There is no correction workflow for confirmed financial information.
 
 Managers/Admin may cancel Draft, Inspection or Confirmed purchases with a
 mandatory reason. Cancellation retains snapshots and records actor/time; retries
-retain that provenance. Rejected and Cancelled are terminal. Paid/Received states
-are not implemented and must use a defined future reversal workflow, not this
-cancellation path. Buyers and Quality Officers cannot confirm/cancel.
+retain that provenance. Rejected and Cancelled are terminal. Paid is implemented by manual payment tracking. Purchases with any posted
+payment cannot be cancelled without a future reversal workflow. Received remains
+pending. Buyers and Quality Officers cannot confirm/cancel.
 
 These actions use company access rules, private action-only snapshot writes and
 ORM row locks. Standard chatter tracks confirmation/cancellation. No payments,
 accounting entries or stock movements are created by this feature. Manager price overrides are implemented as described below.
 
-Fourteen automated tests cover snapshots/retries, rule/name/bounds/currency changes,
+Commercial tests cover snapshots/retries, rule/name/bounds/currency changes,
 missing approval/pricing, quote review/staleness/reset, protected input and snapshot forgery, role isolation,
 reasoned cancellation and foreign-company actions. Only synthetic test rates are
 used; no real or sample rates are activated in hair_demo.

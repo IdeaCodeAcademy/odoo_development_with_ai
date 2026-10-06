@@ -133,7 +133,7 @@ hair_purchase extends res.partner with a seller-filtered intake action and group
 nonstored count/payable kg/last-date metrics. The grouped ORM query runs without
 sudo; fields and action require Buyer access. Dependencies invalidate totals when
 intakes, line weights or seller/date change. Draft metrics are labeled as intakes;
-confirmed purchase metrics use state=confirmed and exclude cancelled transactions.
+confirmed purchase metrics use Confirmed/Paid states and exclude cancelled transactions.
 Count, kg and last purchase date are grouped with the caller permissions. Values
 are grouped by frozen confirmed currency, displayed separately without currency
 conversion. State/amount/currency changes invalidate these nonstored metrics.
@@ -165,3 +165,15 @@ Pricing review is an explicit Compute Price action before confirmation. Stored
 quote values/actor/date support review on the Commercial tab. Confirmation
 rechecks current pricing/classification/currency and refuses stale quotes;
 repricing requires another explicit action. Returning to draft clears quotes.
+
+## Manual payment tracking
+
+hair_purchase provides company-scoped hair.payment.method and
+hair.purchase.payment. Cashier is a separate role; only admins inherit it
+implicitly. Payment posting uses parent/payment ORM locks and a unique request
+key, verifies the currency-rounded outstanding balance, freezes posting provenance
+and advances fully settled purchases to Paid. Stored aggregate computation uses
+standard compute_sudo so purchase readers see totals without payment detail access.
+No funds transfer or accounting entry occurs. Posted records and any paid purchase
+cancellation are blocked until a reversal workflow is defined. Inventory must use
+this full settlement prerequisite when implemented.

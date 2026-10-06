@@ -27,7 +27,7 @@ class ResPartner(models.Model):
     @api.depends_context('uid', 'company')
     def _compute_hair_purchase_statistics(self):
         rows = self.env['hair.purchase']._read_group(
-            [('seller_id', 'in', self.ids), ('state', '=', 'confirmed')],
+            [('seller_id', 'in', self.ids), ('state', 'in', ['confirmed', 'paid'])],
             ['seller_id', 'confirmed_currency_id'], ['__count', 'payable_weight:sum', 'amount_total:sum', 'date:max'],
         )
         statistics = {}
@@ -47,7 +47,7 @@ class ResPartner(models.Model):
 
     def action_view_hair_purchases(self):
         action = self.action_view_hair_intakes()
-        action['domain'].append(('state', '=', 'confirmed'))
+        action['domain'].append(('state', 'in', ['confirmed', 'paid']))
         action['name'] = self.env._('Confirmed Hair Purchases')
         return action
 

@@ -6,3 +6,9 @@ access_hair_pricing_rule_manager,hair.pricing.rule.manager,model_hair_pricing_ru
 access_hair_purchase_quality,hair.purchase.quality,model_hair_purchase,hair_purchase_group_quality,ru,
 access_hair_purchase_line_quality,hair.purchase.line.quality,model_hair_purchase_line,hair_purchase_group_quality,ru,
 access_hair_price_override_wizard_manager,hair.price.override.wizard.manager,model_hair_price_override_wizard,hair_supplier.hair_supplier_group_manager,crud,
+access_hair_payment_cashier,hair.payment.cashier,model_hair_purchase_payment,hair_purchase_group_cashier,crud,"[('purchase_id.state', 'in', ['confirmed', 'paid'])]"
+access_hair_payment_buyer,hair.payment.buyer,model_hair_purchase_payment,hair_supplier.hair_supplier_group_buyer,r,
+access_hair_payment_method_user,hair.payment.method.user,model_hair_payment_method,hair_base.hair_base_group_user,r,
+access_hair_payment_method_manager,hair.payment.method.manager,model_hair_payment_method,hair_base.hair_base_group_manager,cru,
+access_hair_purchase_cashier,hair.purchase.cashier,model_hair_purchase,hair_purchase_group_cashier,ru,"[('state', 'in', ['confirmed', 'paid'])]"
+access_hair_purchase_line_cashier,hair.purchase.line.cashier,model_hair_purchase_line,hair_purchase_group_cashier,r,"[('purchase_id.state', 'in', ['confirmed', 'paid'])]"

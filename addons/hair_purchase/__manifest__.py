@@ -8,11 +8,13 @@
     'depends': ['hair_supplier', 'mail'],
     'data': [
         'security/hair_quality_groups.xml',
+        'security/hair_payment_groups.xml',
         'security/ir.access.csv',
         'security/hair_purchase_security.xml',
         'data/hair_purchase_data.xml',
         'views/hair_purchase_views.xml',
         'views/hair_override_views.xml',
+        'views/hair_payment_views.xml',
         'views/hair_pricing_rule_views.xml',
         'views/res_partner_views.xml',
     ],

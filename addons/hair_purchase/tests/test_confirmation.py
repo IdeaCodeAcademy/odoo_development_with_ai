@@ -1,3 +1,5 @@
+from psycopg2 import IntegrityError
+
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
@@ -296,7 +298,7 @@ class TestHairConfirmation(TransactionCase):
         self.assertIn(new_currency.name, seller.hair_purchase_value_summary)
         self.assertIn('; ', seller.hair_purchase_value_summary)
         action = seller.action_view_hair_purchases()
-        self.assertEqual(action['domain'], [('seller_id', '=', seller.id), ('state', '=', 'confirmed')])
+        self.assertEqual(action['domain'], [('seller_id', '=', seller.id), ('state', 'in', ['confirmed', 'paid'])])
 
     def test_seller_commercial_statistics_security(self):
         purchase = self.intake()
@@ -306,3 +308,136 @@ class TestHairConfirmation(TransactionCase):
                 self.seller.with_user(user).read(['hair_purchase_count', 'hair_purchase_weight', 'hair_purchase_value_summary', 'hair_last_purchase_date'])
             with self.assertRaises(AccessError), self.cr.savepoint():
                 self.seller.with_user(user).action_view_hair_purchases()
+
+    def cashier_and_method(self):
+        cashier = new_test_user(self.env, login='payment_cashier', groups='hair_purchase.hair_purchase_group_cashier')
+        method = self.env['hair.payment.method'].create({'name': 'Synthetic payment method'})
+        return cashier, method
+
+    def payment(self, purchase, cashier, method, amount, **values):
+        return self.env['hair.purchase.payment'].with_user(cashier).create({
+            'purchase_id': purchase.id, 'method_id': method.id, 'amount': amount, **values,
+        })
+
+    def test_partial_full_payments_and_post_retry(self):
+        cashier, method = self.cashier_and_method()
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        first = self.payment(purchase, cashier, method, 10, reference='First payment')
+        self.assertEqual(purchase.payment_status, 'unpaid')
+        first.action_post()
+        self.assertEqual(purchase.payment_status, 'partial')
+        self.assertEqual(purchase.paid_amount, 10)
+        self.assertEqual(purchase.state, 'confirmed')
+        timestamp = first.posted_date
+        first.action_post()
+        self.assertEqual(first.posted_date, timestamp)
+        self.assertEqual(first.posted_by_id, cashier)
+        final = self.payment(purchase, cashier, method, purchase.currency_id.round(purchase.balance_amount))
+        final.action_post()
+        final.action_post()
+        self.assertEqual(purchase.state, 'paid')
+        self.assertEqual(purchase.payment_status, 'paid')
+        self.assertEqual(purchase.balance_amount, 0)
+        self.assertEqual(self.seller.with_user(self.buyer).hair_purchase_count, 1)
+        purchase.action_confirm_purchase()
+        self.assertEqual(purchase.state, 'paid')
+
+    def test_invalid_payments_and_excess_balance(self):
+        cashier, method = self.cashier_and_method()
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        for amount in (0, -1, float('inf'), float('nan'), True, .001):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                self.payment(purchase, cashier, method, amount)
+        excessive = self.payment(purchase, cashier, method, purchase.amount_total + 1)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            excessive.action_post()
+        first = self.payment(purchase, cashier, method, 10)
+        second = self.payment(purchase, cashier, method, purchase.amount_total)
+        first.action_post()
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            second.action_post()
+        method.active = False
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.payment(purchase, cashier, method, 1)
+
+    def test_payment_security_and_provenance_forgery(self):
+        cashier, method = self.cashier_and_method()
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        for user in (self.buyer, self.officer, self.manager, self.env.ref('base.public_user')):
+            with self.assertRaises(AccessError), self.cr.savepoint():
+                self.payment(purchase, user, method, 1)
+        for values in ({'state': 'posted'}, {'posted_by_id': cashier.id}, {'company_id': self.company.id}):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                self.payment(purchase, cashier, method, 1, **values)
+        payment = self.payment(purchase, cashier, method, 1)
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            payment.with_user(self.buyer).action_post()
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            purchase.with_user(cashier).line_ids.write({'gross_weight': 2})
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.seller.with_user(cashier).read(['hair_identification'])
+        for values in ({'state': 'paid'}, {'paid_amount': 100}, {'payment_status': 'paid'}, {'payment_ids': []}):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                purchase.write(values)
+
+    def test_posted_payment_immutable_and_cancellation_blocked(self):
+        cashier, method = self.cashier_and_method()
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        payment = self.payment(purchase, cashier, method, 10)
+        payment.action_post()
+        for operation in (lambda: payment.write({'amount': 1}), payment.unlink, purchase.action_cancel_purchase):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                operation()
+        self.assertEqual(purchase.state, 'confirmed')
+        self.assertEqual(payment.amount, 10)
+        self.assertIn('Payment recorded', str(purchase.message_ids[0].body))
+
+    def test_payment_terminal_and_foreign_company_guards(self):
+        cashier, method = self.cashier_and_method()
+        draft = self.intake(approve=False)
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.payment(draft, cashier, method, 1)
+        cancelled = self.intake()
+        cancelled.write({'cancellation_reason': 'Declined'})
+        cancelled.action_cancel_purchase()
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.payment(cancelled, cashier, method, 1)
+        company = self.env['res.company'].create({'name': 'Foreign Payment Company'})
+        foreign_method = self.env['hair.payment.method'].create({'name': 'Foreign method', 'company_id': company.id})
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.payment(purchase, cashier, foreign_method, 1)
+        payment = self.payment(purchase, cashier, method, 1)
+        payment.unlink()
+        self.assertFalse(payment.exists())
+        self.assertIn('action_post', str(self.env['hair.purchase.payment'].with_user(cashier).get_view(view_type='form')['arch']))
+
+    def test_payment_request_uniqueness_and_context_defaults(self):
+        cashier, method = self.cashier_and_method()
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        self.payment(purchase, cashier, method, 1, request_key='stable-client-payment-key')
+        with self.assertRaises(IntegrityError), self.cr.savepoint():
+            self.payment(purchase, cashier, method, 1, request_key='stable-client-payment-key')
+        defaults = self.env['hair.purchase.payment'].with_context(default_state='posted', default_posted_by_id=cashier.id).default_get(['state', 'posted_by_id'])
+        self.assertEqual(defaults['state'], 'draft')
+        self.assertFalse(defaults['posted_by_id'])
+        defaults = self.env['hair.purchase'].with_context(default_paid_amount=999, default_payment_status='paid').default_get(['paid_amount', 'payment_status'])
+        self.assertEqual(defaults['paid_amount'], 0)
+        self.assertEqual(defaults['payment_status'], 'unpaid')
+
+    def test_cancelled_draft_payment_is_hidden_from_cashier(self):
+        cashier, method = self.cashier_and_method()
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        payment = self.payment(purchase, cashier, method, 1)
+        purchase.write({'cancellation_reason': 'Cancelled before paying'})
+        purchase.action_cancel_purchase()
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            payment.read(['amount', 'purchase_id'])
+        self.assertEqual(payment.with_user(self.buyer).amount, 1)
