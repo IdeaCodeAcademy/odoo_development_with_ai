@@ -12,10 +12,10 @@ class ResConfigSettings(models.TransientModel):
     @api.onchange('map_box_token')
     def _onchange_map_box_token(self):
         if not self.map_box_token:
-            return
+            return None
         map_box_token = self.env['ir.config_parameter'].get_str('ica_web_responsive.token_map_box')
         if self.map_box_token == map_box_token:
-            return
+            return None
 
         url = 'https://api.mapbox.com/directions/v5/mapbox/driving/-73.989%2C40.733%3B-74%2C40.733'
         headers = {
@@ -32,11 +32,12 @@ class ResConfigSettings(models.TransientModel):
         except requests.exceptions.RequestException:
             error_code = 500
         if error_code == 200:
-            return
+            return None
         self.map_box_token = ''
         if error_code == 401:
             return {'warning': {'message': _('The token input is not valid')}}
-        elif error_code == 403:
+        if error_code == 403:
             return {'warning': {'message': _('This referer is not authorized')}}
-        elif error_code == 500:
+        if error_code == 500:
             return {'warning': {'message': _('The MapBox server is unreachable')}}
+        return None

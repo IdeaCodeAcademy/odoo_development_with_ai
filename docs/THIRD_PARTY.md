@@ -13,3 +13,8 @@
 - Added tests for cross-company location protection, allowed updates and theme
   preference ownership.
 - No Mapbox token or external provider configuration is supplied.
+
+Ruff compliance also normalizes Python imports/spacing, removes unused imports
+and makes onchange None returns explicit. hair_base's model imports retain a
+narrow I001 exemption because the abstract parent must register before its
+length subclass; alphabetic sorting breaks Odoo registry initialization.

@@ -56,3 +56,11 @@ These references are for Odoo 19.0. This project targets Odoo 20.0 Community;
 verify version-dependent APIs and behavior against Odoo 20.0 documentation and
 the installed Odoo 20.0 implementation. Use Odoo 20.0 conventions when they
 differ from the linked Odoo 19.0 guidance.
+
+## Ruff validation
+
+Run `ruff check .` using the repository's `ruff.toml` before committing each
+completed feature. Fix all reported violations and rerun Ruff until it passes.
+Do not mark a feature complete or commit it while Ruff or relevant automated
+tests fail. Keep lint scope/exclusions justified; do not suppress errors merely
+to obtain a passing result.

@@ -20,7 +20,7 @@
             ('before', 'web/static/src/scss/bootstrap_overridden.scss', 'ica_web_responsive/static/src/scss/bootstrap_overridden.scss'),
         ],
         'web.assets_frontend': [
-            'ica_web_responsive/static/src/webclient/home_menu/home_menu_background.scss', # used by login page
+            'ica_web_responsive/static/src/webclient/home_menu/home_menu_background.scss',  # used by login page
             'ica_web_responsive/static/src/webclient/navbar/navbar.scss',
         ],
         'web.assets_backend': [
@@ -77,7 +77,7 @@
             'ica_web_responsive/static/src/**/*.dark.scss',
         ],
     },
-    "images":["static/description/img_1.png"],
+    "images": ["static/description/img_1.png"],
     'author': 'Agga, IdeaCode Academy',
     'license': 'LGPL-3',
 }

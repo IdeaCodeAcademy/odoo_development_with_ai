@@ -1,9 +1,12 @@
 """Check demo authentication and installed addons without displaying credentials."""
-from http.cookiejar import CookieJar
 import json
+import logging
+from http.cookiejar import CookieJar
 from pathlib import Path
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
+logging.basicConfig(level=logging.INFO, format='%(message)s')
+_logger = logging.getLogger(__name__)
 
 opener = build_opener(HTTPCookieProcessor(CookieJar()))
 base_url = 'http://127.0.0.1:8071'
@@ -19,12 +22,12 @@ def rpc(path, params):
     return result['result']
 
 
-credentials = Path('.demo_credentials').read_text()
+credentials = Path('.demo_credentials').read_text(encoding='utf-8')
 password = credentials.split('Password: ', 1)[1].strip()
 session = rpc('/web/session/authenticate', {'db': 'hair_demo', 'login': 'admin', 'password': password})
 assert session.get('uid'), 'Demo authentication failed'
 modules = rpc('/web/session/modules', {})
-assert {'hair_base', 'hair_supplier', 'ica_web_responsive'}.issubset(modules), 'Required addons not installed'
+assert {'hair_base', 'hair_supplier', 'hair_purchase', 'ica_web_responsive'}.issubset(modules), 'Required addons not installed'
 seller_count = rpc('/web/dataset/call_kw/res.partner/search_count', {
     'model': 'res.partner', 'method': 'search_count',
     'args': [[('hair_is_seller', '=', True)]], 'kwargs': {},
@@ -32,4 +35,4 @@ seller_count = rpc('/web/dataset/call_kw/res.partner/search_count', {
 assert seller_count >= 1, 'Demo seller not found'
 with opener.open(base_url + '/odoo', timeout=30) as response:
     assert response.status == 200
-print('Demo authentication, installed addons and web page checks passed')
+_logger.info('Demo authentication, installed addons and web page checks passed')
