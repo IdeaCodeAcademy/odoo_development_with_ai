@@ -988,3 +988,9 @@ create or validate a hair stock receipt. Enforce this in server actions and the
 stock integration, including direct RPC paths; a UI-only restriction is insufficient.
 Payment tracking must precede receipt implementation. Payment/stock reversals
 remain outside the approved cancellation workflow until their policy is defined.
+
+## 39. Confirmed partial receipt policy
+
+The user allows partial inventory receipts after full payment. Track cumulative
+received kg per purchase line, reject over-receipt and mark the purchase Received
+only once every line has been fully received.

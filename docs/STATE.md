@@ -102,9 +102,9 @@
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 73 executed tests
-  (71 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_a9aa01a67183.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 78 executed tests
+  (76 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_7957d9251961.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
 - Environment and authenticated demo checks passed after payment tracking update.
 - Demo history fields and seller-filtered action verified through authenticated RPC.
@@ -178,3 +178,14 @@ optional accounting, processing, dashboards and later roadmap phases.
 - Seven automated payment tests added. No real payment/provider or price data seeded.
 - Manual record posting does not transfer funds or create accounting entries.
 - Inventory receipt, accounting bridge, QWeb receipts and reversals remain pending.
+
+## Inventory product configuration feature
+
+- hair_inventory installed with standard stock dependency; hair type maps to a
+  stock-tracked, lot-tracked kg product, shared or same-company.
+- Inherited master ACL/company controls; linked product changes validate all
+  mappings including archived types. Inactive products cannot resolve for receipt.
+- Five tests pass; targeted rerun verifies archived mapping integrity.
+- User authorized partial receipts after full payment. Cumulative receipt kg
+  cannot exceed payable kg; Received requires complete receipt of all lines.
+- Receipt posting, purchase/lot source links and reversal workflow remain pending.

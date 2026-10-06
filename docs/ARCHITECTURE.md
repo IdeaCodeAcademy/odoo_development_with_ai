@@ -177,3 +177,11 @@ standard compute_sudo so purchase readers see totals without payment detail acce
 No funds transfer or accounting entry occurs. Posted records and any paid purchase
 cancellation are blocked until a reversal workflow is defined. Inventory must use
 this full settlement prerequisite when implemented.
+
+## Inventory foundation
+
+hair_inventory maps hair.type to standard product.product using inherited master
+permissions. Require stock-tracked goods, lot tracking and kg; shared or matching
+company products are supported. Linked product changes revalidate all mappings.
+Partial receipts are authorized after full payment. Cumulative quantities must
+not exceed payable kg; all lines fully received trigger Received.

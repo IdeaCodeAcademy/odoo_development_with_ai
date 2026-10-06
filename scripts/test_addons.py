@@ -12,8 +12,8 @@ database = 'hair_test_' + uuid.uuid4().hex[:12]
 log_path = Path(tempfile.gettempdir()) / (database + '.log')
 command = [
     'docker', 'compose', 'run', '--rm', '--no-deps', 'web', 'odoo',
-    '-d', database, '-i', 'hair_base,hair_supplier,hair_purchase,ica_web_responsive', '--without-demo=true',
-    '--test-enable', '--test-tags=/hair_base,/hair_supplier,/hair_purchase,/ica_web_responsive',
+    '-d', database, '-i', 'hair_base,hair_supplier,hair_purchase,hair_inventory,ica_web_responsive', '--without-demo=true',
+    '--test-enable', '--test-tags=/hair_base,/hair_supplier,/hair_purchase,/hair_inventory,/ica_web_responsive',
     '--stop-after-init', '--no-http', '--log-level=test',
 ]
 _logger.info('Test database: %s; log: %s', database, log_path)
@@ -30,6 +30,7 @@ if result.returncode == 0 and ('Starting TestHairMasterData.' not in output
                              or 'Starting TestSellerIntakeHistory.' not in output
                              or 'Starting TestHairQuality.' not in output
                              or 'Starting TestHairConfirmation.' not in output
+                             or 'Starting TestHairInventoryConfiguration.' not in output
                              or '0 failed, 0 error(s)' not in output):
     message = 'Expected custom test suites did not complete successfully'
     raise SystemExit(message)
