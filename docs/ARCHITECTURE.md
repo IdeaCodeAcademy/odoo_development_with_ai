@@ -37,8 +37,8 @@ weight, grade, selected pricing rule and the confirmed price snapshot. Multiple
 lines are supported from the first intake implementation.
 
 Draft → Inspection → Confirmed → Paid → Received, with Rejected and Cancelled
-terminal states. Payment status is separate (unpaid/partial/paid). Future receipt
-policy must specify whether partially/unpaid confirmed purchases can be received.
+terminal states. Payment status is separate (unpaid/partial/paid). Receipt policy is fully-paid-only: unpaid/partially paid confirmed purchases
+cannot be received. Implement valid payment tracking before inventory receipt.
 State changes run through authorized server actions; direct write/import/RPC
 cannot bypass protected values or transition validation. Confirmation freezes
 classification, weight, seller, grade, rate, rule and currency-rounded amount.
@@ -94,7 +94,8 @@ and stop-after-init, without exposing the test container's HTTP port.
   and grade are required for pricing. Additional criteria remain configurable.
 - Commercial policy delegated: Manager/Admin confirm, override with reason and
   cancel. Protected confirmed corrections remain prohibited without a correction workflow.
-- Are receipts allowed before full payment, and what is the reversal policy?
+- Receipt policy resolved: full payment is required before receipt. Payment/stock
+  reversal policy remains undefined.
 - Are branches enabled initially, and how are users assigned to branches?
 - Weight unit resolved: kg. Resolution confirmed: 0.001 kg (1 g). Currency confirmed: MMK. Real rates and effective dates need configuration.
 

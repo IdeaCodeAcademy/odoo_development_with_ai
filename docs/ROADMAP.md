@@ -35,6 +35,7 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
 - Phase 5 inspection/grade approval/rejection foundation is implemented; extended
   criterion configuration remains pending.
 - Manager commercial confirmation/reasoned cancellation is implemented.
-- Inventory receipt needs payment/receipt policy before integration.
+- Inventory receipt requires full payment (user confirmed). Implement payment
+  tracking before receipt; payment/stock reversal policy remains pending.
 - Later phases remain pending. See STATE.md for validated results and required
   business configuration; these feature milestones do not imply full release.

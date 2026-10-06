@@ -978,3 +978,13 @@ are inferred. Real company currency/rates must come from business configuration.
 The user specified MMK. The hair_demo company currency is MMK, using Odoo's
 standard currency rounding configuration (currently 0.01). Real per-kg rates
 and their effective dates remain business input; no illustrative rate is active.
+
+## 38. Confirmed inventory receipt policy
+
+The user confirmed that stock receipt is not permitted before full payment.
+Only commercially confirmed purchases whose valid recorded payments fully settle
+the confirmed amount may be received. Unpaid and partially paid purchases cannot
+create or validate a hair stock receipt. Enforce this in server actions and the
+stock integration, including direct RPC paths; a UI-only restriction is insufficient.
+Payment tracking must precede receipt implementation. Payment/stock reversals
+remain outside the approved cancellation workflow until their policy is defined.

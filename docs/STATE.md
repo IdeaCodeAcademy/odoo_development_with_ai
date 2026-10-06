@@ -124,17 +124,20 @@ and effective dates remain missing. No real/sample rate rules are activated in
 hair_demo. Synthetic rates exercise development tests without guessing business
 prices; this data gap does not prevent independent workflow implementation.
 
-## Exact blocker and required input for inventory integration
+## Inventory receipt policy resolved
 
-Receipt/payment policy is not defined: may stock be received for confirmed
-unpaid/partially paid purchases, or only after full payment? A question presenting
-these two policies has been sent. This decision changes receipt state guards and
-is required before implementing stock receipt behavior.
+The user answered that stock receipt before full payment is not permitted.
+Unpaid/partially paid purchases must be blocked; only confirmed, fully settled
+purchases may be received. The earlier receipt-policy question is resolved.
 
-Required input: choose fully-paid-only receipt or confirmed unpaid/partial receipt.
-Remaining work: extended quality criteria, inventory/lot
-receipt after this policy, payment/accounting and
-later roadmap phases. No guessed receipt/reversal policy has been activated.
+Next dependency: implement payment tracking before inventory receipt and enforce
+full settlement through server-side receipt guards. Neither payment tracking nor
+stock receipt is implemented yet; this documentation change does not claim an
+active runtime receipt guard. Payment/stock reversal policy remains undefined;
+paid/received cancellation must stay prohibited until a reversal workflow exists.
+Real rates/effective dates are still required to use the commercial demo flow.
+Remaining work: payment tracking, inventory/lot receipt, extended quality criteria,
+optional accounting, processing, dashboards and later roadmap phases.
 
 ## Manager price override feature
 
