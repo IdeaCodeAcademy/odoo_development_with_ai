@@ -95,3 +95,9 @@ reports = rpc('/web/dataset/call_kw/ir.actions.report/search_read', {
 assert len(reports) == 1 and reports[0]['report_type'] == 'qweb-pdf', 'Purchase PDF receipt unavailable'
 assert reports[0]['binding_model_id'] and reports[0]['group_ids'], 'Receipt binding/security unavailable'
 _logger.info('Purchase receipt report registration passed')
+
+search_view = rpc('/web/dataset/call_kw/hair.purchase/get_view', {
+    'model': 'hair.purchase', 'method': 'get_view', 'args': [], 'kwargs': {'view_type': 'search'},
+})
+assert all(token in search_view['arch'] for token in ('Seller Phone', 'Hair Type', 'Grade', 'Length', 'commercial_purchases', 'outstanding_payments', 'group_payment')), 'Purchase search filters unavailable'
+_logger.info('Purchase search view passed')

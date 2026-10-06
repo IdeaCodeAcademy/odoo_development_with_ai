@@ -102,9 +102,9 @@
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 92 executed tests
-  (86 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_3ea695124065.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 94 executed tests
+  (92 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_ae85946a862f.
 - Final targeted inventory rerun: 15 tests, 0 failed, 0 errors.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
 - Environment and authenticated demo checks passed after inventory receipt update.
@@ -225,3 +225,20 @@ optional accounting, processing, dashboards and later roadmap phases.
   failures/errors, including rates with more than six decimal places. Ruff passes.
   Demo upgraded; report registration, authentication and startup verified.
 - See HAIR_PURCHASE_RECEIPT.md for printing instructions and dependencies.
+
+## Purchase search and filtering feature
+
+- Standard Odoo search view now includes seller phone, type/grade/length text,
+  lifecycle/payment status and date periods/custom ranges.
+- Classification searches retain confirmed labels after master-name changes.
+- Confirmed Purchases includes Confirmed/Paid/Received; Outstanding Payment
+  excludes drafts and fully paid purchases. Header grouping includes seller,
+  buyer, status, payment status, month and permitted company.
+- No new permissions or sudo queries. Two tests exercise actual view domains,
+  historical/current names, company isolation and partial/full payment changes.
+- Full suite: 94 tests, zero failures/errors in hair_test_ae85946a862f. Ruff and
+  environment/authenticated demo search-view checks pass. Demo upgraded.
+- Initial test startup exhausted PostgreSQL clients; restarting this project's
+  web service released pooled connections, and the fresh isolated rerun passed.
+- Branch and inventory-lot search remain pending. Existing missing real rates,
+  reversal policy and later processing/quality/dashboard work remain unchanged.

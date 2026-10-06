@@ -1,9 +1,11 @@
+from lxml import etree
 from psycopg2 import IntegrityError
 
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tests.common import new_test_user
+from odoo.tools.safe_eval import safe_eval
 
 
 @tagged('post_install', '-at_install')
@@ -494,3 +496,51 @@ class TestHairConfirmation(TransactionCase):
         )
         self.assertEqual(report_type, 'pdf')
         self.assertTrue(pdf.startswith(b'%PDF'))
+
+    def search_domain(self, xpath, value=None):
+        view = self.env['hair.purchase'].with_user(self.buyer).get_view(
+            self.env.ref('hair_purchase.hair_purchase_view_search').id, 'search',
+        )
+        node = etree.fromstring(view['arch']).xpath(xpath)[0]
+        return safe_eval(node.get('filter_domain') or node.get('domain'), {'self': value})
+
+    def test_classification_search_retains_history_and_company_isolation(self):
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        self.hair_type.name = 'Renamed Type'
+        self.grade.name = 'Renamed Grade'
+        self.length.name = 'Renamed Length'
+        Purchase = self.env['hair.purchase'].with_user(self.buyer)
+        for label, original, current in (
+            ('Hair Type', 'Original Type', 'Renamed Type'),
+            ('Grade', 'Original Grade', 'Renamed Grade'),
+            ('Length', 'Original Length', 'Renamed Length'),
+        ):
+            for value in (original, current):
+                domain = self.search_domain("//field[@string='%s']" % label, value)
+                self.assertIn(purchase, Purchase.search(domain))
+        company = self.env['res.company'].create({'name': 'Foreign Search Company'})
+        seller = self.env['res.partner'].create({'name': 'Foreign Search Seller', 'hair_is_seller': True, 'company_id': company.id, 'phone': 'unique-search-phone'})
+        foreign = self.env['hair.purchase'].create({'seller_id': seller.id, 'company_id': company.id})
+        self.seller.phone = 'unique-search-phone'
+        domain = self.search_domain("//field[@string='Seller Phone']", 'unique-search-phone')
+        self.assertIn(purchase, Purchase.search(domain))
+        self.assertNotIn(foreign, Purchase.search(domain))
+
+    def test_commercial_and_outstanding_search_filters_follow_payments(self):
+        draft = self.intake(approve=False)
+        purchase = self.intake()
+        purchase.action_confirm_purchase()
+        Purchase = self.env['hair.purchase'].with_user(self.buyer)
+        commercial = self.search_domain("//filter[@name='commercial_purchases']")
+        outstanding = self.search_domain("//filter[@name='outstanding_payments']")
+        self.assertIn(purchase, Purchase.search(commercial))
+        self.assertNotIn(draft, Purchase.search(commercial))
+        self.assertIn(purchase, Purchase.search(outstanding))
+        self.assertNotIn(draft, Purchase.search(outstanding))
+        cashier, method = self.cashier_and_method()
+        self.payment(purchase, cashier, method, 10).action_post()
+        self.assertIn(purchase, Purchase.search(outstanding))
+        self.payment(purchase, cashier, method, purchase.balance_amount).action_post()
+        self.assertNotIn(purchase, Purchase.search(outstanding))
+        self.assertIn(purchase, Purchase.search(commercial))

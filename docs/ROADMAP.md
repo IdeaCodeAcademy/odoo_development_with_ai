@@ -51,3 +51,7 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
 
 - Printable purchase QWeb PDF receipt implemented with frozen purchase values,
   posted payment details, company/role guards and cancelled labels.
+
+- Requirements §24 purchase search foundation implemented: phone, historical
+  classification names, lifecycle/payment/date filters and useful header groups.
+  Branch and inventory-lot search remain pending.

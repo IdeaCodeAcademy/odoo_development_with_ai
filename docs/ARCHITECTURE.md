@@ -207,3 +207,10 @@ purchase read access without sudo, including company isolation. Unconfirmed
 intakes are rejected; cancelled confirmed purchases display a cancellation label.
 NRC and draft payments are omitted. Odoo 20 standard base_report_wkhtmltox
 provides the PDF engine. See HAIR_PURCHASE_RECEIPT.md.
+
+## Purchase search
+
+Standard search-view domains use current relations plus confirmed classification
+labels. Commercial and outstanding-payment filters operate on lifecycle/payment
+status, without new stored computed fields or access grants. Standard date
+filters and grouping retain ORM security. See HAIR_PURCHASE.md.

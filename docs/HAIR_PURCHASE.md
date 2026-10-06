@@ -46,8 +46,7 @@ Eight pricing tests cover date boundaries, grades, length ranges, open lengths,
 archiving, overlap prevention including master edits, invalid rates, permissions,
 company isolation and views. Test rates are synthetic; no real or illustrative
 price rules are installed in hair_demo. Manager Compute Price prepares a reviewable quote; confirmation verifies freshness
-and preserves historical snapshots. Price overrides
-and their audit interface remain pending.
+and preserves historical snapshots. Manager price overrides and their audit interface are implemented; see HAIR_CONFIRMATION.md.
 
 The private quote API selects the rule and returns its identifier, per-kg rate,
 currency and currency-rounded amount (payable kg × rate). It rejects zero,
@@ -60,5 +59,26 @@ The module extends the seller form with intake count, total payable kg and last
 intake date, plus an Intakes smart button. A grouped ORM query applies the caller's
 access restrictions; no sudo is used. Four tests cover fresh/corrected totals,
 seller reassignment, action filters/defaults, forbidden field/action access and
-foreign-company isolation. These are intake metrics, including drafts; confirmed
-purchase/value statistics remain dependent on the commercial workflow.
+foreign-company isolation. These are intake metrics, including drafts; confirmed purchase/value statistics are implemented separately and include Confirmed, Paid and Received purchases.
+
+## Purchase search and filters
+
+Hair Intakes supports reference, seller, seller phone, buyer, hair type, grade,
+length, lifecycle and payment status searches. Classification text matches either
+current configuration names or frozen confirmation labels, so renaming master
+records does not erase historical searchability. Seller Phone searches the
+current seller phone; it does not expose restricted identification fields.
+
+Date supports standard Odoo periods and custom ranges. Confirmed Purchases
+includes Confirmed, Paid and Received, excluding drafts and cancelled purchases.
+Outstanding Payment includes commercially confirmed unpaid/partially paid
+purchases; fully settled records disappear from this filter. Adjacent commercial,
+draft and inspection filters follow Odoo's usual OR behavior; separate filter
+groups combine with AND.
+
+Group by Seller, Buyer, Status, Payment Status, Purchase Month or Company (for
+multi-company users). Searches retain existing ORM access/company restrictions;
+no additional permissions, sudo queries or transaction compute fields are added.
+Branch searching awaits branch membership policy; purchase-to-lot searching is
+reserved for the inventory integration. Classification searches operate at the
+purchase level: separate terms may match different lines of a multi-line intake.

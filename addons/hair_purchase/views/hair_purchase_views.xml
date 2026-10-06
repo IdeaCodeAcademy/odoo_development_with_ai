@@ -58,7 +58,32 @@
     </record>
     <record id="hair_purchase_view_search" model="ir.ui.view">
         <field name="name">hair.purchase.search</field><field name="model">hair.purchase</field>
-        <field name="arch" type="xml"><search><field name="name"/><field name="seller_id"/><field name="buyer_id"/><filter name="purchase_date" string="Date" date="date"/><filter name="group_seller" string="Seller" context="{'group_by': 'seller_id'}"/><filter name="group_buyer" string="Buyer" context="{'group_by': 'buyer_id'}"/></search></field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="seller_id"/>
+                <field name="name" string="Seller Phone" filter_domain="[('seller_id.phone', 'ilike', self)]"/>
+                <field name="buyer_id"/>
+                <field name="name" string="Hair Type" filter_domain="['|', ('line_ids.hair_type_id.name', 'ilike', self), ('line_ids.hair_type_snapshot', 'ilike', self)]"/>
+                <field name="name" string="Grade" filter_domain="['|', ('line_ids.grade_id.name', 'ilike', self), ('line_ids.grade_snapshot', 'ilike', self)]"/>
+                <field name="name" string="Length" filter_domain="['|', ('line_ids.length_id.name', 'ilike', self), ('line_ids.length_snapshot', 'ilike', self)]"/>
+                <field name="state"/><field name="payment_status"/>
+                <filter name="purchase_date" string="Date" date="date"/>
+                <separator/>
+                <filter name="commercial_purchases" string="Confirmed Purchases" domain="[('state', 'in', ['confirmed', 'paid', 'received'])]"/>
+                <filter name="draft_intakes" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="inspection_intakes" string="Inspection" domain="[('state', '=', 'inspection')]"/>
+                <separator/>
+                <filter name="outstanding_payments" string="Outstanding Payment" domain="[('state', '=', 'confirmed'), ('payment_status', 'in', ['unpaid', 'partial'])]"/>
+                <separator/>
+                <filter name="group_seller" string="Seller" context="{'group_by': 'seller_id'}"/>
+                <filter name="group_buyer" string="Buyer" context="{'group_by': 'buyer_id'}"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="group_payment" string="Payment Status" context="{'group_by': 'payment_status'}"/>
+                <filter name="group_date" string="Purchase Month" context="{'group_by': 'date:month'}"/>
+                <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+            </search>
+        </field>
     </record>
     <record id="hair_purchase_action" model="ir.actions.act_window">
         <field name="name">Hair Intakes</field><field name="res_model">hair.purchase</field><field name="view_mode">list,form</field>
