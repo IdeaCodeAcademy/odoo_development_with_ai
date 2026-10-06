@@ -298,7 +298,7 @@ class TestHairConfirmation(TransactionCase):
         self.assertIn(new_currency.name, seller.hair_purchase_value_summary)
         self.assertIn('; ', seller.hair_purchase_value_summary)
         action = seller.action_view_hair_purchases()
-        self.assertEqual(action['domain'], [('seller_id', '=', seller.id), ('state', 'in', ['confirmed', 'paid'])])
+        self.assertEqual(action['domain'], [('seller_id', '=', seller.id), ('state', 'in', ['confirmed', 'paid', 'received'])])
 
     def test_seller_commercial_statistics_security(self):
         purchase = self.intake()

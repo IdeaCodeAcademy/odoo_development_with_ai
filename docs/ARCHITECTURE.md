@@ -185,3 +185,16 @@ permissions. Require stock-tracked goods, lot tracking and kg; shared or matchin
 company products are supported. Linked product changes revalidate all mappings.
 Partial receipts are authorized after full payment. Cumulative quantities must
 not exceed payable kg; all lines fully received trigger Received.
+
+## Partial stock receipt transaction
+
+hair.receipt/line drafts describe planned quantities. Warehouse posts a fully paid
+purchase using an explicit incoming operation. One picking and per-line standard
+moves/lots complete through stock ORM; receipt and source snapshots remain linked.
+Cumulative line kg is aggregated from completed receipts without sudo. Parent and
+receipt locks, refreshed caches, unique source links and a parent provenance write
+on every partial receipt protect retries/concurrent quantity checks. All lines
+received advances purchase to Received. Source transfers/lots/details are immutable;
+linked returns await reversal policy. Stock Product Unit precision must be >=3.
+Seller and Cashier history includes Received. No valuation/accounting bridge is
+added; product valuation continues through standard Odoo configuration.

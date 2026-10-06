@@ -1,0 +1,11 @@
+id,name,model_id/id,group_id/id,operation,domain
+receipt_warehouse,hair.receipt.warehouse,model_hair_receipt,group_hair_warehouse,crud,
+receipt_line_warehouse,hair.receipt.line.warehouse,model_hair_receipt_line,group_hair_warehouse,crud,
+receipt_buyer,hair.receipt.buyer,model_hair_receipt,hair_supplier.hair_supplier_group_buyer,r,
+receipt_line_buyer,hair.receipt.line.buyer,model_hair_receipt_line,hair_supplier.hair_supplier_group_buyer,r,
+receipt_quality,hair.receipt.quality,model_hair_receipt,hair_purchase.hair_purchase_group_quality,r,
+receipt_line_quality,hair.receipt.line.quality,model_hair_receipt_line,hair_purchase.hair_purchase_group_quality,r,
+receipt_cashier,hair.receipt.cashier,model_hair_receipt,hair_purchase.hair_purchase_group_cashier,r,
+receipt_line_cashier,hair.receipt.line.cashier,model_hair_receipt_line,hair_purchase.hair_purchase_group_cashier,r,
+purchase_warehouse,hair.purchase.warehouse,hair_purchase.model_hair_purchase,group_hair_warehouse,ru,"[('state', 'in', ['paid', 'received'])]"
+purchase_line_warehouse,hair.purchase.line.warehouse,hair_purchase.model_hair_purchase_line,group_hair_warehouse,r,"[('purchase_id.state', 'in', ['paid', 'received'])]"

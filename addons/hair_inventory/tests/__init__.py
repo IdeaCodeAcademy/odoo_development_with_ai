@@ -1,1 +1,1 @@
-from . import test_configuration
+from . import test_configuration, test_receipt

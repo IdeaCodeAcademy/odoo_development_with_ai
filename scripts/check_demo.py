@@ -46,11 +46,11 @@ assert action['domain'] == [['seller_id', '=', sellers[0]['id']]], 'Seller histo
 purchase_action = rpc('/web/dataset/call_kw/res.partner/action_view_hair_purchases', {
     'model': 'res.partner', 'method': 'action_view_hair_purchases', 'args': [[sellers[0]['id']]], 'kwargs': {},
 })
-assert purchase_action['domain'] == [['seller_id', '=', sellers[0]['id']], ['state', 'in', ['confirmed', 'paid']]]
+assert purchase_action['domain'] == [['seller_id', '=', sellers[0]['id']], ['state', 'in', ['confirmed', 'paid', 'received']]]
 quality_fields = rpc('/web/dataset/call_kw/hair.purchase/fields_get', {
     'model': 'hair.purchase', 'method': 'fields_get', 'args': [['state', 'quality_approved', 'inspector_id', 'confirmed_currency_id', 'quoted_date', 'amount_total', 'paid_amount', 'balance_amount', 'payment_status']], 'kwargs': {},
 })
-assert {'draft', 'inspection', 'rejected', 'confirmed', 'cancelled', 'paid'}.issubset({key for key, _label in quality_fields['state']['selection']})
+assert {'draft', 'inspection', 'rejected', 'confirmed', 'cancelled', 'paid', 'received'}.issubset({key for key, _label in quality_fields['state']['selection']})
 assert quality_fields['quality_approved']['readonly'], 'Quality approval metadata must be readonly'
 assert quality_fields['confirmed_currency_id']['readonly'], 'Confirmed currency must be protected'
 form = rpc('/web/dataset/call_kw/hair.purchase/get_view', {
@@ -63,6 +63,19 @@ payment_form = rpc('/web/dataset/call_kw/hair.purchase.payment/get_view', {
     'model': 'hair.purchase.payment', 'method': 'get_view', 'args': [], 'kwargs': {'view_type': 'form'},
 })
 assert 'action_post' in payment_form['arch'], 'Payment posting form unavailable'
+receipt_form = rpc('/web/dataset/call_kw/hair.receipt/get_view', {
+    'model': 'hair.receipt', 'method': 'get_view', 'args': [], 'kwargs': {'view_type': 'form'},
+})
+assert 'action_receive' in receipt_form['arch'], 'Hair receipt form unavailable'
+lot_form = rpc('/web/dataset/call_kw/stock.lot/get_view', {
+    'model': 'stock.lot', 'method': 'get_view', 'args': [], 'kwargs': {'view_type': 'form'},
+})
+assert 'hair_receipt_line_id' in lot_form['arch'], 'Hair lot traceability form unavailable'
+precision = rpc('/web/dataset/call_kw/decimal.precision/search_read', {
+    'model': 'decimal.precision', 'method': 'search_read', 'args': [[('name', '=', 'Product Unit')]],
+    'kwargs': {'fields': ['digits']},
+})
+assert precision and precision[0]['digits'] >= 3, 'Stock precision must preserve 0.001 kg'
 user = rpc('/web/dataset/call_kw/res.users/read', {
     'model': 'res.users', 'method': 'read', 'args': [[session['uid']], ['company_id']], 'kwargs': {},
 })[0]

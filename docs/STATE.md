@@ -102,12 +102,13 @@
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 78 executed tests
-  (76 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_7957d9251961.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 88 executed tests
+  (86 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_be0f486bc8c1.
+- Final targeted inventory rerun: 15 tests, 0 failed, 0 errors.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
-- Environment and authenticated demo checks passed after payment tracking update.
-- Demo history fields and seller-filtered action verified through authenticated RPC.
+- Environment and authenticated demo checks passed after inventory receipt update.
+- Demo history, receipt/lot views and Product Unit precision >=3 verified through authenticated RPC.
 
 ## Delegated workflow policy
 
@@ -131,10 +132,10 @@ Unpaid/partially paid purchases must be blocked; only confirmed, fully settled
 purchases may be received. The earlier receipt-policy question is resolved.
 
 Next dependency: integrate inventory receipt with the implemented payment tracking and enforce
-full settlement through server-side receipt guards. Manual payment tracking is implemented; stock receipt is pending; stock receipt guards will be implemented with inventory. Payment/stock reversal policy remains undefined;
+full settlement through server-side receipt guards. Manual payment tracking and partial receipt are implemented; full payment is enforced during receipt posting. Payment/stock reversal policy remains undefined;
 paid/received cancellation must stay prohibited until a reversal workflow exists.
 Real rates/effective dates are still required to use the commercial demo flow.
-Remaining work: inventory/lot receipt, extended quality criteria,
+Remaining work: extended quality criteria,
 optional accounting, processing, dashboards and later roadmap phases.
 
 ## Manager price override feature
@@ -158,8 +159,7 @@ optional accounting, processing, dashboards and later roadmap phases.
 - Grouped ORM queries run as the caller without sudo or new access grants.
 - Automated tests cover lifecycle/reset, negotiated values, historical currencies,
   action domain, role/public/portal denial and foreign-company seller access.
-- Paid purchases now contribute to confirmed history. Received must extend the
-  domain when inventory integration is implemented.
+- Paid and Received purchases contribute to confirmed history.
 
 ## Manual payment tracking feature
 
@@ -177,7 +177,7 @@ optional accounting, processing, dashboards and later roadmap phases.
   total/context forgery blocked; Cashiers cannot grade/change kg or access NRC.
 - Seven automated payment tests added. No real payment/provider or price data seeded.
 - Manual record posting does not transfer funds or create accounting entries.
-- Inventory receipt, accounting bridge, QWeb receipts and reversals remain pending.
+- Accounting bridge, QWeb receipts and reversals remain pending; inventory receipt is implemented below.
 
 ## Inventory product configuration feature
 
@@ -188,4 +188,25 @@ optional accounting, processing, dashboards and later roadmap phases.
 - Five tests pass; targeted rerun verifies archived mapping integrity.
 - User authorized partial receipts after full payment. Cumulative receipt kg
   cannot exceed payable kg; Received requires complete receipt of all lines.
-- Receipt posting, purchase/lot source links and reversal workflow remain pending.
+- Receipt posting and purchase/lot source links are implemented below; reversal workflow remains pending.
+
+## Fully paid partial inventory receipt feature
+
+- Separate Warehouse User inherits standard stock permissions, without Buyer,
+  grading or NRC authority. Company restrictions apply to receipt headers/lines.
+- Explicit supplier-to-internal Incoming operation; positive 0.001 kg quantities
+  against purchase lines. Fully paid status checked server-side under ORM locks.
+- Cumulative kg cannot exceed payable kg; all lines complete advances to Received.
+- Standard picking/move/lot/quant operations; frozen source labels traced through
+  receipt and purchase lines. Every partial receipt has its own source lots.
+- Repeated receipt posting is a no-op; database uniqueness for picking/move/lot
+  source links. Locked parent is updated for every partial receipt to prevent
+  stale cumulative reads across concurrent transactions.
+- Completed source quantities/details/links protected; stock-link/context forgery,
+  adding stock details/moves, duplicate lot inbound and linked returns blocked.
+- Product Unit global precision requires at least three decimals, matching user
+  scale resolution. Fresh install hook sets this; demo configuration updated.
+- Ten receipt tests cover physical quant/lot effects, partial and multi-line
+  completion, limits/security/atomic failure/retries/immutability/returns.
+- No reversal or accounting policy inferred. Real prices/product/operation setup
+  still required before recording actual business purchases.

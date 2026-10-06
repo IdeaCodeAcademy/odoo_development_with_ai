@@ -44,4 +44,7 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
   Accounting bridge, payment/purchase QWeb receipts and reversals remain pending.
 
 - Phase 6 product mapping prerequisite implemented and verified. Partial receipts
-  are authorized; receipt posting and purchase-to-lot traceability are next.
+  are authorized; receipt posting and purchase-to-lot traceability are implemented.
+
+- Phase 6 fully paid partial receipts, source lots, cumulative limits and complete
+  Received state are implemented. Reversals await an explicit business policy.

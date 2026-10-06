@@ -40,4 +40,13 @@ class ProductTemplate(models.Model):
             self.env['hair.type'].sudo().with_context(active_test=False).search([
                 ('stock_product_id.product_tmpl_id', 'in', self.ids),
             ])._check_stock_product()
+            sources = self.env['stock.move'].sudo().search([
+                ('product_id.product_tmpl_id', 'in', self.ids), ('hair_receipt_line_id', '!=', False),
+            ])
+            for move in sources:
+                product = move.product_id
+                if (not product.is_storable or product.tracking != 'lot'
+                        or product.uom_id != self.env.ref('uom.product_uom_kgm')
+                        or (product.company_id and product.company_id != move.company_id)):
+                    raise ValidationError(self.env._('A hair source receipt product must retain lot tracking, kg units and its compatible company.'))
         return result
