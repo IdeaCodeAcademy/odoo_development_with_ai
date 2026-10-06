@@ -24,3 +24,14 @@ Core workflow: Seller → Hair Intake → Weight → Quality/Grade → Pricing
 
 Implementation order follows dependencies; no phase is declared complete while
 its tests fail. Outstanding business decisions are tracked in STATE.md.
+
+## Current feature progress
+
+- Phase 0 and Phase 1 are complete.
+- Phase 2 seller foundation is complete; purchase statistics/history remain.
+- Phase 3 draft intake and kg weight feature is complete; inspection submission
+  depends on the quality workflow.
+- Phase 4 pricing configuration, selection and private quote calculation are
+  implemented; applying quotes, confirmation snapshots and override audit remain.
+- Later phases remain pending. See STATE.md for validated results and required
+  business configuration; these feature milestones do not imply full release.

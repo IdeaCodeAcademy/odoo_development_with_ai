@@ -27,3 +27,28 @@ Run `ruff check .` and `python3 scripts/test_addons.py`. Tests cover multi-line
 calculations at 1 g resolution, deductions, nonfinite/negative data, relations,
 company isolation, unauthorized access, lifecycle/derived-field protection and
 view loading in an isolated database.
+
+## Pricing rule configuration and selection
+
+Configuration → Prices per kg stores company-currency rates by hair type, grade,
+length definition and inclusive effective dates. Configuration Administrators
+create/edit/archive rules; hair users can read applicable company rules. Records
+are retained, and public/portal access is denied.
+
+Active rules cannot overlap in company/type/grade, inclusive length bounds and
+inclusive dates. Length master edits revalidate affected rules. A narrow sudo
+validation checks hidden rules without granting read/write permission. Exact,
+ranged and open-ended lengths are supported. Selection requires one rule covering
+the entire intake length definition and date; missing/ambiguous matches fail.
+Archived rules remain excluded even with an active_test=False caller context.
+
+Eight pricing tests cover date boundaries, grades, length ranges, open lengths,
+archiving, overlap prevention including master edits, invalid rates, permissions,
+company isolation and views. Test rates are synthetic; no real or illustrative
+price rules are installed in hair_demo. Applying quotes to intakes, price snapshots, overrides
+and confirmation are subsequent workflow features, not yet implemented.
+
+The private quote API selects the rule and returns its identifier, per-kg rate,
+currency and currency-rounded amount (payable kg × rate). It rejects zero,
+negative and nonfinite payable kg. This prepares later confirmation snapshots;
+returned quotes are not yet applied to intake records.

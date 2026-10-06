@@ -52,16 +52,28 @@
 - Seven intake tests cover calculations, validation, permissions and view loading.
 - Inspection submission/confirmation and commercial effects are not implemented.
 
+## Phase 4 - Pricing Configuration/Selection Feature - Complete
+
+- Company-currency price per kg rules by type, grade, length and effective dates.
+- Active overlap rejected, including bounds changed on shared length definitions.
+- Exact/range/open lengths and inclusive date boundaries supported.
+- Exactly one matching rule is required; archived/missing/ambiguous rules rejected.
+- Private quote API computes currency-rounded payable kg × rate.
+- Configuration admins mutate; hair users read; companies remain isolated.
+- Eight pricing tests pass. No real rates seeded in hair_demo.
+- Intake quote application, historical confirmation snapshots and override audit
+  remain pending; the entire Pricing Engine phase is not declared complete.
+
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 29 executed tests
-  (27 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_d27b8623f932.
-- Installed in hair_demo; browser Hair Intakes list verified. Environment and
-  authenticated demo checks passed.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 37 executed tests
+  (35 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_a22eeb855662.
+- hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
+- Environment and authenticated demo checks passed after pricing update.
 
-## Next work and delegated workflow policy
+## Delegated workflow policy
 
 User authorized suitable commercial/quality policy. Manager/Admin will confirm,
 override prices (with a reason) and cancel. Quality Officer will approve final
@@ -69,5 +81,14 @@ grades. Confirmation requires seller, positive payable kg, hair type, length,
 approved grade and a valid pricing rule. Implement these server-enforced actions
 in later workflow features; this authorization resolves the role-policy blocker.
 
-Next: configurable company/type/grade/length/date pricing rule selection. Real
-rates and company currency are business configuration and will not be invented.
+## Exact blocker and required input
+
+The business pricing configuration is missing: actual company currency, real
+price per kg by hair type/grade/length, and effective start dates. Requirements
+examples explicitly do not establish real prices. A question requesting these
+values has been sent. No guessed commercial rates are activated.
+
+Supply the currency and rate table (or explicitly authorize illustrative demo-only
+pricing) to activate and verify the commercial workflow against business pricing.
+Remaining work includes applying quotes, quality approval/submission, confirmation
+snapshots/override audit, seller statistics, and later roadmap phases.

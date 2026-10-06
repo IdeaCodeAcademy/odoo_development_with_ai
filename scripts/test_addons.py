@@ -26,6 +26,7 @@ if result.returncode == 0 and ('Starting TestHairMasterData.' not in output
                              or 'Starting TestLocationSecurity.' not in output
                              or 'Starting TestHairSellers.' not in output
                              or 'Starting TestHairIntake.' not in output
+                             or 'Starting TestHairPricing.' not in output
                              or '0 failed, 0 error(s)' not in output):
     message = 'Expected custom test suites did not complete successfully'
     raise SystemExit(message)

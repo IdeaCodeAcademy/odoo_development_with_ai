@@ -90,8 +90,10 @@ and stop-after-init, without exposing the test container's HTTP port.
 ## Decisions required before later features
 
 - Seller policy resolved: Buyers create/edit; Managers/Admin access NRC.
-- Which inspection criteria are required, and who approves the final grade?
-- Which roles may confirm, override prices, cancel or correct purchases?
+- Quality policy delegated: Quality Officer approves final grade; type, length
+  and grade are required for pricing. Additional criteria remain configurable.
+- Commercial policy delegated: Manager/Admin confirm, override with reason and
+  cancel. Protected confirmed corrections remain prohibited without a correction workflow.
 - Are receipts allowed before full payment, and what is the reversal policy?
 - Are branches enabled initially, and how are users assigned to branches?
 - Weight unit resolved: kg. Resolution confirmed: 0.001 kg (1 g). Currency, real rates and effective dates need configuration.
@@ -108,3 +110,15 @@ state is implemented until pricing/quality and commercial action policies are
 ready; no financial or stock effects occur.
 
 Ruff uses the Odoo runbot configuration in ruff.toml and must pass before commits.
+
+## Pricing rule selection
+
+hair.pricing.rule belongs to hair_purchase and uses company currency and per-kg
+rates. Required matching dimensions are company, type, grade, inclusive length
+bounds and effective dates. Active overlaps are rejected; length master changes
+revalidate affected rules. Matching covers the whole chosen intake length
+interval and returns exactly one rule or a validation error. Company isolation
+and configuration-admin mutation permissions are enforced. Rates have no fixed
+quantity precision; payable weights remain three-decimal kg quantities. No real
+rates are seeded. Quote application, confirmation snapshots and override audit
+remain distinct pending features.

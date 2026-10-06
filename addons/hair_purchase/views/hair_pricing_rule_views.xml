@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hair_pricing_rule_view_list" model="ir.ui.view">
+        <field name="name">hair.pricing.rule.list</field><field name="model">hair.pricing.rule</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="hair_type_id"/><field name="grade_id"/><field name="length_id"/><field name="date_start"/><field name="date_end"/><field name="price_per_kg"/><field name="currency_id"/><field name="company_id" groups="base.group_multi_company"/><field name="active" optional="hide"/></list></field>
+    </record>
+    <record id="hair_pricing_rule_view_form" model="ir.ui.view">
+        <field name="name">hair.pricing.rule.form</field><field name="model">hair.pricing.rule</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="name"/><field name="company_id"/><field name="currency_id"/><field name="hair_type_id"/><field name="grade_id"/><field name="length_id"/><field name="date_start"/><field name="date_end"/><field name="price_per_kg"/><field name="active"/></group></sheet></form></field>
+    </record>
+    <record id="hair_pricing_rule_view_search" model="ir.ui.view">
+        <field name="name">hair.pricing.rule.search</field><field name="model">hair.pricing.rule</field>
+        <field name="arch" type="xml"><search><field name="name"/><field name="hair_type_id"/><field name="grade_id"/><filter name="archived" string="Archived" domain="[('active', '=', False)]"/></search></field>
+    </record>
+    <record id="hair_pricing_rule_action" model="ir.actions.act_window">
+        <field name="name">Prices per kg</field><field name="res_model">hair.pricing.rule</field><field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="hair_pricing_rule_menu" name="Prices per kg" parent="hair_base.hair_base_menu_configuration" action="hair_pricing_rule_action" sequence="60" groups="hair_base.hair_base_group_manager"/>
+</odoo>

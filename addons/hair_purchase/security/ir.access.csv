@@ -1,3 +1,5 @@
 id,name,model_id/id,group_id/id,operation,domain
 access_hair_purchase_buyer,hair.purchase.buyer,model_hair_purchase,hair_supplier.hair_supplier_group_buyer,cru,
 access_hair_purchase_line_buyer,hair.purchase.line.buyer,model_hair_purchase_line,hair_supplier.hair_supplier_group_buyer,crud,
+access_hair_pricing_rule_user,hair.pricing.rule.user,model_hair_pricing_rule,hair_base.hair_base_group_user,r,
+access_hair_pricing_rule_manager,hair.pricing.rule.manager,model_hair_pricing_rule,hair_base.hair_base_group_manager,cru,
