@@ -1,37 +1,35 @@
-version: '3.8'
-
 services:
-  odoo:
-    image: odoo:20.0
-    container_name: odoo_20
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - db
     ports:
-      - "8069:8069"
+      - "127.0.0.1:8071:8069"
     volumes:
-      - odoo_data:/var/lib/odoo
-      - odoo_addons:/mnt/omnidoc/addons
+      - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
-      - ./custom_addons:/mnt/omnidoc/custom_addons
+      - ./addons:/mnt/extra-addons
     environment:
-      - HOST=odoo-db
-      - PORT=5432
-      - USER=odoo
-      - PASSWORD=odoo
-    restart: unless-stopped
-
+      - PASSWORD_FILE=/run/secrets/postgresql_password
+    secrets:
+      - postgresql_password
   db:
-    image: postgres:15
-    container_name: odoo_db_20
+    image: postgres:16
     environment:
       - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgresql_password
       - POSTGRES_USER=odoo
-      - POSTGRES_PASSWORD=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    secrets:
+      - postgresql_password
 volumes:
-  odoo_data:
-  odoo_addons:
-  postgres_data:
+  odoo-web-data:
+  odoo-db-data:
+
+secrets:
+  postgresql_password:
+    file: odoo_pg_pass
