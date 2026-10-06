@@ -10,6 +10,7 @@
 - Environment checks pass: Compose validation, PostgreSQL readiness and HTTP.
 - `hair_demo` created with standard Odoo demo data; login is admin, password is
   stored in local Git-ignored `.demo_credentials` with file mode 0600.
+- User confirmed MMK; hair_demo company currency set to MMK and verified.
 - Demo URL: http://localhost:8071/web/login?db=hair_demo.
 
 ## ICA Web Responsive - Complete
@@ -83,12 +84,12 @@ in later workflow features; this authorization resolves the role-policy blocker.
 
 ## Exact blocker and required input
 
-The business pricing configuration is missing: actual company currency, real
+The business pricing configuration is missing: real
 price per kg by hair type/grade/length, and effective start dates. Requirements
 examples explicitly do not establish real prices. A question requesting these
-values has been sent. No guessed commercial rates are activated.
+values has been sent. Currency was answered as MMK; rates/dates are still missing. No guessed commercial rates are activated.
 
-Supply the currency and rate table (or explicitly authorize illustrative demo-only
+Supply the rate table (or explicitly authorize illustrative demo-only
 pricing) to activate and verify the commercial workflow against business pricing.
 Remaining work includes applying quotes, quality approval/submission, confirmation
 snapshots/override audit, seller statistics, and later roadmap phases.

@@ -33,6 +33,13 @@ seller_count = rpc('/web/dataset/call_kw/res.partner/search_count', {
     'args': [[('hair_is_seller', '=', True)]], 'kwargs': {},
 })
 assert seller_count >= 1, 'Demo seller not found'
+user = rpc('/web/dataset/call_kw/res.users/read', {
+    'model': 'res.users', 'method': 'read', 'args': [[session['uid']], ['company_id']], 'kwargs': {},
+})[0]
+company = rpc('/web/dataset/call_kw/res.company/read', {
+    'model': 'res.company', 'method': 'read', 'args': [[user['company_id'][0]], ['currency_id']], 'kwargs': {},
+})[0]
+assert company['currency_id'][1] == 'MMK', 'Demo company currency must be MMK'
 with opener.open(base_url + '/odoo', timeout=30) as response:
     assert response.status == 200
 _logger.info('Demo authentication, installed addons and web page checks passed')

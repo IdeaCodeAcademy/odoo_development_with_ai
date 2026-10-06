@@ -96,7 +96,7 @@ and stop-after-init, without exposing the test container's HTTP port.
   cancel. Protected confirmed corrections remain prohibited without a correction workflow.
 - Are receipts allowed before full payment, and what is the reversal policy?
 - Are branches enabled initially, and how are users assigned to branches?
-- Weight unit resolved: kg. Resolution confirmed: 0.001 kg (1 g). Currency, real rates and effective dates need configuration.
+- Weight unit resolved: kg. Resolution confirmed: 0.001 kg (1 g). Currency confirmed: MMK. Real rates and effective dates need configuration.
 
 These decisions gate the affected features, not independent foundation work.
 

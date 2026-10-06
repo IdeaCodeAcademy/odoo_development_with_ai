@@ -972,3 +972,9 @@ approves final grades. Confirmation requires a seller, positive payable kg,
 hair type, length, approved grade and an applicable pricing rule. Additional
 quality criteria remain configurable; no arbitrary damage/moisture thresholds
 are inferred. Real company currency/rates must come from business configuration.
+
+## 37. Confirmed currency
+
+The user specified MMK. The hair_demo company currency is MMK, using Odoo's
+standard currency rounding configuration (currently 0.01). Real per-kg rates
+and their effective dates remain business input; no illustrative rate is active.
