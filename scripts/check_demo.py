@@ -43,6 +43,11 @@ action = rpc('/web/dataset/call_kw/res.partner/action_view_hair_intakes', {
     'model': 'res.partner', 'method': 'action_view_hair_intakes', 'args': [[sellers[0]['id']]], 'kwargs': {},
 })
 assert action['domain'] == [['seller_id', '=', sellers[0]['id']]], 'Seller history filter incorrect'
+quality_fields = rpc('/web/dataset/call_kw/hair.purchase/fields_get', {
+    'model': 'hair.purchase', 'method': 'fields_get', 'args': [['state', 'quality_approved', 'inspector_id']], 'kwargs': {},
+})
+assert {'draft', 'inspection', 'rejected'}.issubset({key for key, _label in quality_fields['state']['selection']})
+assert quality_fields['quality_approved']['readonly'], 'Quality approval metadata must be readonly'
 user = rpc('/web/dataset/call_kw/res.users/read', {
     'model': 'res.users', 'method': 'read', 'args': [[session['uid']], ['company_id']], 'kwargs': {},
 })[0]

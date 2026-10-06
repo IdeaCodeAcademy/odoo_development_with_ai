@@ -105,9 +105,8 @@ These decisions gate the affected features, not independent foundation work.
 Weights use fixed three-decimal kg precision as confirmed by the user. Drafts
 use company currency and generated references, support multiple lines and
 standard mail attachments. Calculated quantities are protected from direct
-write/import. Changing company after adding lines is prohibited. Only draft
-state is implemented until pricing/quality and commercial action policies are
-ready; no financial or stock effects occur.
+write/import. Changing company after adding lines is prohibited. Draft, Inspection and Rejected states are implemented; commercial
+confirmation awaits its pricing snapshot feature; no financial or stock effects occur.
 
 Ruff uses the Odoo runbot configuration in ruff.toml and must pass before commits.
 
@@ -130,3 +129,15 @@ nonstored count/payable kg/last-date metrics. The grouped ORM query runs without
 sudo; fields and action require Buyer access. Dependencies invalidate totals when
 intakes, line weights or seller/date change. Draft metrics are labeled as intakes;
 confirmed purchased-weight/value statistics belong to the later commercial flow.
+
+## Quality workflow
+
+A separate Quality Officer privilege reads/updates company intakes/lines and reads
+master data without inheriting seller Buyer or NRC permissions. Buyers submit
+complete positive-weight lines; officers grade and approve/reject. Approval
+retains inspector/date and locks findings. Returning to draft resets approval;
+reopening an approved inspection requires a reason and records prior grades.
+States and provenance are assigned only by private action helpers; UI/RPC/import
+cannot supply protected values or forge context defaults. ORM row locks serialize
+parent actions and line edits. Standard chatter tracks approval/rejection/reset
+and attachments. No new stock or financial effects occur in this feature.

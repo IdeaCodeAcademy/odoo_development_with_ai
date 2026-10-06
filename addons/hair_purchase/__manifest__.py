@@ -2,11 +2,12 @@
     'name': 'Hair Purchase Intake',
     'version': '20.0.1.0.0',
     'category': 'Purchases',
-    'summary': 'Company-scoped draft hair intake and kilogram weights',
+    'summary': 'Hair intake, kilogram weights, pricing rules and quality inspection',
     'author': 'IdeaCode Academy',
     'license': 'LGPL-3',
     'depends': ['hair_supplier', 'mail'],
     'data': [
+        'security/hair_quality_groups.xml',
         'security/ir.access.csv',
         'security/hair_purchase_security.xml',
         'data/hair_purchase_data.xml',

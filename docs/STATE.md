@@ -52,7 +52,7 @@
 - Server validation rejects negative/nonfinite weights and excessive deductions.
 - Company isolation, relation integrity and forged calculated values are tested.
 - Seven intake tests cover calculations, validation, permissions and view loading.
-- Inspection submission/confirmation and commercial effects are not implemented.
+- Inspection submission is implemented; confirmation and commercial effects remain pending.
 
 ## Phase 4 - Pricing Configuration/Selection Feature - Complete
 
@@ -74,12 +74,24 @@
 - Buyer/Manager/Admin field/action access enforced; foreign sellers denied.
 - Four tests cover updates, reassignment, action defaults and security.
 
+## Quality Inspection/Grade Approval Feature - Complete
+
+- Buyer submits type/length/positive payable kg lines for inspection.
+- Separate Quality Officer grades every line and approves or rejects with a reason.
+- Approval records inspector/time; retries retain provenance.
+- Submitted inputs and approved findings are immutable; return to draft resets
+  approval. Reopening approval requires a reason and logs previous grades.
+- Copy produces a fresh draft without approval or inspection provenance.
+- Company access, direct/context forgery, role/NRC separation and views tested.
+- Uses ORM row locks and standard chatter/attachments; no sudo or raw SQL.
+- Extended criterion configuration remains pending; no quality thresholds invented.
+
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 41 executed tests
-  (39 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_5af82a70ac17.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 49 executed tests
+  (47 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_fb2503d230b1.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
 - Environment and authenticated demo checks passed after history update.
 - Demo history fields and seller-filtered action verified through authenticated RPC.
@@ -101,5 +113,5 @@ values has been sent. Currency was answered as MMK; rates/dates are still missin
 
 Supply the rate table (or explicitly authorize illustrative demo-only
 pricing) to activate and verify the commercial workflow against business pricing.
-Remaining work includes applying quotes, quality approval/submission, confirmation
+Remaining work includes applying quotes and confirmation
 snapshots/override audit, confirmed seller purchase/value statistics, and later roadmap phases.

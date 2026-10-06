@@ -50,12 +50,16 @@ class HairPurchase(models.Model):
 
     def write(self, vals):
         self._check_derived_values(vals)
-        if 'name' in vals or ('state' in vals and vals['state'] != 'draft'):
+        if 'name' in vals or 'state' in vals:
             raise ValidationError(self.env._('Purchase references and lifecycle cannot be changed directly.'))
         if 'company_id' in vals:
             self._check_company_permission(vals['company_id'])
             if any(purchase.line_ids and purchase.company_id.id != vals['company_id'] for purchase in self):
                 raise ValidationError(self.env._('Create a new intake to change the company after adding hair lines.'))
+        return super().write(vals)
+
+    def _write_workflow(self, vals):
+        # Private action-only write; no caller-controlled context bypass.
         return super().write(vals)
 
     def _check_company_permission(self, company_id):
@@ -115,6 +119,9 @@ class HairPurchaseLine(models.Model):
         self._check_weight_values(vals)
         if 'purchase_id' in vals:
             self._check_purchase_permission(vals['purchase_id'])
+        return super().write(vals)
+
+    def _write_quality(self, vals):
         return super().write(vals)
 
     def _check_purchase_permission(self, purchase_id):
