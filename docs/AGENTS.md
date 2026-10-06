@@ -3,10 +3,10 @@
 You are implementing an Odoo 20.0 Community project.
 
 Read before working:
-1. REQUIREMENTS.md
-2. ARCHITECTURE.md
-3. ROADMAP.md
-4. STATE.md
+1. docs/REQUIREMENTS.md
+2. docs/ARCHITECTURE.md
+3. docs/ROADMAP.md
+4. docs/STATE.md
 
 Work autonomously.
 
@@ -19,7 +19,7 @@ For each feature:
 6. Run relevant tests.
 7. Fix failures before continuing.
 8. Update documentation.
-9. Update STATE.md.
+9. Update docs/STATE.md.
 10. Commit the completed feature.
 
 Never:

@@ -925,3 +925,26 @@ Tests must cover at least:
 - Partial payment
 - Invalid payment amount
 - Rejected purchase payment prevention
+
+### Inventory and Processing
+
+- Purchase-to-lot traceability and company consistency
+- Duplicate receipt prevention
+- Input/output lot traceability
+- Loss and yield calculation, including zero-input rejection
+
+### Security and Historical Integrity
+
+- Authorized and unauthorized operations through ORM calls
+- Company isolation for reads, creates and updates
+- Public/portal access rejection
+- Confirmed values preserved after configuration changes
+- Duplicate critical action prevention
+
+## 33. Implementation clarifications
+
+The architecture and staged acceptance criteria are recorded in ARCHITECTURE.md
+and ROADMAP.md. Example classifications, prices and payment providers are
+illustrations, not mandatory seed data. Phase 1 may proceed with configurable
+master data; permissions for seller identity and later commercial actions need
+explicit business policy before those features are implemented.

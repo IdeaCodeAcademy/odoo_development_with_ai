@@ -30,3 +30,13 @@ docker compose down
 
 The `odoo-web-data` and `odoo-db-data` volumes preserve application and database
 data when containers stop. Avoid removing these volumes if you need the data.
+
+## Project documentation
+
+- [Agent instructions](docs/AGENTS.md)
+- [Requirements](docs/REQUIREMENTS.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Implementation state](docs/STATE.md)
+
+Read these documents before working on the project.
