@@ -1,36 +1,42 @@
 # Project State
 
-## Initialization
+## Initialization and Phase 0 - Complete
 
-- Requirements analyzed; module boundaries and workflow recorded in ARCHITECTURE.md.
-- ROADMAP.md now defines dependency and acceptance gates for every phase.
-- All project Markdown documents except root README.md are under docs/.
-- ECC Python patterns and security-review instructions read for implementation.
+- Requirements, architecture, roadmap and agent instructions are under docs/.
+- Official Odoo 19 Git/coding guidelines read through the GitHub connector from
+  odoo/documentation branch 19.0; earlier website timeout blocker is resolved.
+- ECC Python patterns and security-review guidance applied.
+- Odoo 20.0 Community build 20.0-20260926 and PostgreSQL 16 run through Compose.
+- Environment checks pass: Compose validation, PostgreSQL readiness and HTTP.
+- `hair_demo` created with standard Odoo demo data; login is admin, password is
+  stored in local Git-ignored `.demo_credentials` with file mode 0600.
+- Demo URL: http://localhost:8071/web/login?db=hair_demo.
 
-## Phase 0 - Environment
+## ICA Web Responsive - Complete
 
-- Odoo 20.0 Community and PostgreSQL 16 containers are running.
-- `python3 scripts/check_environment.py` passed: Compose validation,
-  PostgreSQL readiness and HTTP 200 from the Odoo database selector.
-- Development endpoint: http://localhost:8071.
-- Database password remains in the ignored Docker secret file.
-- No business database or administrator account was created.
+- Odoo 20 source copied from the local IdeaCodeAcademy/odoo_app_store checkout;
+  source commit and license recorded in THIRD_PARTY.md.
+- Installed in hair_demo. Login and responsive home menu verified in browser.
+- Removed internal-user sudo from partner location updates.
+- Five automated tests cover location access/company isolation and theme ownership.
 
 ## Phase 1 - Hair Base
 
-- Architecture is defined; implementation has not started.
-- No business feature is marked complete.
+Implementation and tests are ready; recorded in the next feature commit.
 
-## Exact blocker and required input
+## Latest validation
 
-AGENTS.md requires reading the official Odoo Git and coding guidelines before
-implementation. Both requested documentation pages repeatedly time out; fetching
-the official documentation repository source also timed out. Search results
-provide excerpts, but the complete required references could not be read.
+- `python3 scripts/test_addons.py`: exit 0, 0 failed, 0 errors, 15 executed
+  tests (13 custom tests and 2 automatically selected web suite cases).
+- Test database: hair_test_6e09cdc90408; isolated from hair_demo.
+- `python3 scripts/check_environment.py`: passed.
+- `python3 scripts/check_demo.py`: authentication, installed modules and web passed.
+- `git diff --check`: passed.
+- Test databases are retained for diagnosis; no business database was changed.
 
-Required input: restore access to those official pages or provide their complete
-contents locally. Once available, read them and begin hair_base using the verified
-environment. No approval is needed for ordinary implementation steps.
+## Phase 2 policy and next work
 
-Later policy inputs are listed in ARCHITECTURE.md; seller creation/edit and NRC
-visibility permissions are required before Phase 2 sensitive seller features.
+User specified: Buyer can create/edit sellers; Manager/Admin can view NRC.
+This policy resolves the seller authorization question. Implement hair_supplier
+next, retaining company isolation and field-level NRC protection. Purchase
+history/statistics depend on hair_purchase and will be added there.
