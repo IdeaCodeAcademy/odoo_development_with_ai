@@ -14,5 +14,6 @@
 ## Planning
 
 - AGENTS.md and ROADMAP.md record the supplied instructions and phases.
-- REQUIREMENTS.md and ARCHITECTURE.md have not been supplied yet.
+- REQUIREMENTS.md records the supplied Hair Purchasing Management System requirements.
+- ARCHITECTURE.md has not been supplied yet.
 - Business features have not been implemented.
