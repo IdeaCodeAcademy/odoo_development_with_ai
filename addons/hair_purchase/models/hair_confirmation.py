@@ -72,6 +72,9 @@ class HairPurchase(models.Model):
             raise ValidationError(self.env._('Purchase amounts must be finite and nonnegative.'))
         return quotes
 
+    def _confirmation_quotes(self):
+        return self._validated_quotes()
+
     def action_quote_purchase(self):
         self.ensure_one()
         self._require_hair_role('hair_supplier.hair_supplier_group_manager')
@@ -96,7 +99,7 @@ class HairPurchase(models.Model):
         self._lock_quality_records()
         if self.state == 'confirmed':
             return True
-        quotes = self._validated_quotes()
+        quotes = self._confirmation_quotes()
         if not self.quoted_date or self.quoted_currency_id != self.company_id.currency_id:
             raise ValidationError(self.env._('Compute and review pricing before confirmation.'))
         for line, quote in quotes:

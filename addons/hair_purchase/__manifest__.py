@@ -12,6 +12,7 @@
         'security/hair_purchase_security.xml',
         'data/hair_purchase_data.xml',
         'views/hair_purchase_views.xml',
+        'views/hair_override_views.xml',
         'views/hair_pricing_rule_views.xml',
         'views/res_partner_views.xml',
     ],

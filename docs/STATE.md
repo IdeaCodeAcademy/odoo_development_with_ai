@@ -64,7 +64,7 @@
 - Configuration admins mutate; hair users read; companies remain isolated.
 - Eight pricing tests pass. No real rates seeded in hair_demo.
 - Confirmation now applies quotes and preserves historical snapshots. Price
-  override audit remains pending; the entire Pricing Engine phase is not declared complete.
+  override and chatter audit are implemented; real pricing data remains pending.
 
 ## Seller Intake History Feature - Complete
 
@@ -98,16 +98,16 @@
 - Reasoned Manager cancellation retains actor/time and historical monetary values.
 - Repeated confirm/cancel calls retain original provenance; ORM parent row locking.
 - Nine tests pass, including quote freshness/reset; no actual payments/accounting/stock operations created.
-- Price override audit/UI remains a subsequent feature.
+- Manager-only price override UI and audit are implemented (see below).
 
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 58 executed tests
-  (56 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_0e4ef99bbefc.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 63 executed tests
+  (61 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_d42fb89e53a5.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
-- Environment and authenticated demo checks passed after quality/confirmation update.
+- Environment and authenticated demo checks passed after price override update.
 - Demo history fields and seller-filtered action verified through authenticated RPC.
 
 ## Delegated workflow policy
@@ -133,6 +133,17 @@ these two policies has been sent. This decision changes receipt state guards and
 is required before implementing stock receipt behavior.
 
 Required input: choose fully-paid-only receipt or confirmed unpaid/partial receipt.
-Remaining work: price override audit/UI, extended quality criteria, inventory/lot
+Remaining work: extended quality criteria, inventory/lot
 receipt after this policy, payment/accounting, confirmed seller statistics and
 later roadmap phases. No guessed receipt/reversal policy has been activated.
+
+## Manager price override feature
+
+- Approved, fresh inspection quotes support Manager/Admin reasoned rate overrides.
+- Matrix base rate and latest actor/time/reason are protected from direct writes
+  and forged defaults; every changed rate records old/new values in chatter.
+- Confirmation revalidates the base pricing rule and preserves negotiated values.
+- Repricing/return to draft resets current override fields, retaining audit history.
+- Same-rate retries are no-ops; confirmed/terminal rates remain immutable.
+- Five additional tests cover audit/retries, invalid rates/reasons, role/company
+  isolation, forged provenance, stale rules/reset/copy and wizard/view access.

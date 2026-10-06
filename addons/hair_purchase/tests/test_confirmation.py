@@ -175,3 +175,84 @@ class TestHairConfirmation(TransactionCase):
         self.assertFalse(purchase.line_ids.pricing_rule_id)
         self.assertEqual(purchase.line_ids.amount, 0)
         self.assertEqual(purchase.amount_total, 0)
+
+    def test_price_override_audit_confirmation_and_retry(self):
+        purchase = self.intake()
+        line = purchase.line_ids
+        line.action_override_price(200, 'Agreed exceptional seller rate')
+        timestamp = line.override_date
+        self.assertEqual(line.override_base_rate, 123.456)
+        self.assertEqual(line.override_by_id, self.manager)
+        self.assertEqual(purchase.amount_total, self.company.currency_id.round(.601 * 200))
+        line.action_override_price(200, 'Retry')
+        self.assertEqual(line.override_date, timestamp)
+        line.action_override_price(250, 'Second negotiated rate')
+        self.assertEqual(line.override_base_rate, 123.456)
+        messages = purchase.message_ids.filtered(lambda message: 'Price override for line' in str(message.body))
+        self.assertEqual(len(messages), 2)
+        self.assertIn('200', str(messages[0].body))
+        self.assertIn('Second negotiated rate', str(messages[0].body))
+        purchase.action_confirm_purchase()
+        self.assertEqual(line.price_per_kg, 250)
+        self.rule.write({'price_per_kg': 999})
+        purchase.action_confirm_purchase()
+        self.assertEqual(line.price_per_kg, 250)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            line.action_override_price(300, 'After confirmation')
+
+    def test_price_override_security_and_input_validation(self):
+        purchase = self.intake()
+        line = purchase.line_ids
+        for user in (self.buyer, self.officer, self.env.ref('base.public_user')):
+            with self.assertRaises(AccessError), self.cr.savepoint():
+                line.with_user(user).action_override_price(200, 'Unauthorized')
+        for rate, reason in ((0, 'Zero'), (-1, 'Negative'), (float('inf'), 'Infinity'),
+                             (float('nan'), 'NaN'), (True, 'Boolean'), (200, '  ')):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                line.action_override_price(rate, reason)
+        for vals in ({'override_base_rate': 1}, {'override_by_id': self.manager.id}, {'override_reason': 'Forged'}):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                line.write(vals)
+        defaults = self.env['hair.purchase.line'].with_context(default_override_by_id=self.manager.id).default_get(['override_by_id'])
+        self.assertFalse(defaults['override_by_id'])
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.intake(quote=False).line_ids.action_override_price(200, 'Unquoted')
+
+    def test_override_stale_pricing_and_reset(self):
+        purchase = self.intake()
+        line = purchase.line_ids
+        line.action_override_price(200, 'Negotiated rate')
+        self.rule.write({'price_per_kg': 150})
+        for action in (purchase.action_confirm_purchase, lambda: line.action_override_price(250, 'Stale base')):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                action()
+        purchase.action_quote_purchase()
+        self.assertFalse(line.override_by_id)
+        self.assertEqual(line.price_per_kg, 150)
+        line.action_override_price(250, 'Reviewed new base')
+        purchase.write({'revision_reason': 'Review weights'})
+        purchase.action_return_to_draft()
+        self.assertFalse(line.override_by_id)
+        self.assertFalse(line.override_reason)
+        self.assertTrue(purchase.message_ids.filtered(lambda message: 'Negotiated rate' in str(message.body)))
+
+    def test_override_wizard_permissions_and_view(self):
+        purchase = self.intake()
+        action = purchase.line_ids.action_open_price_override()
+        wizard = self.env[action['res_model']].with_user(self.manager).with_context(action['context']).create({'rate': 200, 'reason': 'Wizard review'})
+        wizard.action_apply()
+        self.assertEqual(purchase.line_ids.price_per_kg, 200)
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.env['hair.price.override.wizard'].with_user(self.buyer).create({'line_id': purchase.line_ids.id, 'rate': 300, 'reason': 'Forged'})
+        self.assertIn('action_open_price_override', str(purchase.get_view(view_type='form')['arch']))
+
+    def test_override_foreign_company_and_copy(self):
+        purchase = self.intake()
+        purchase.line_ids.action_override_price(200, 'Special agreement')
+        duplicate = purchase.with_user(self.buyer).copy()
+        self.assertFalse(duplicate.line_ids.override_by_id)
+        company = self.env['res.company'].create({'name': 'Override Foreign Company'})
+        seller = self.env['res.partner'].create({'name': 'Foreign', 'hair_is_seller': True, 'company_id': company.id})
+        foreign = self.env['hair.purchase'].create({'seller_id': seller.id, 'company_id': company.id, 'line_ids': [Command.create({'gross_weight': 1})]})
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            foreign.line_ids.with_user(self.manager).action_override_price(200, 'Foreign override')

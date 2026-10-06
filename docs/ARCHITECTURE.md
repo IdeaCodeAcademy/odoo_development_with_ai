@@ -121,7 +121,10 @@ and configuration-admin mutation permissions are enforced. Rates have no fixed
 quantity precision; payable weights remain three-decimal kg quantities. No real
 rates are seeded. Manager quotation supplies reviewable currency/price/classification snapshots;
 confirmation verifies freshness and freezes them.
-The price override and audit interface remains pending.
+Manager-only price overrides retain protected matrix-rate/provenance fields and
+standard chatter entries for each old/new rate and reason. Confirmation checks
+the original matrix rate before accepting an override. Repricing/reset clears
+current override fields while preserving chatter history.
 
 ## Seller intake history
 

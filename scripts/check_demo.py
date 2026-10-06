@@ -54,6 +54,7 @@ form = rpc('/web/dataset/call_kw/hair.purchase/get_view', {
 })
 assert 'action_confirm_purchase' in form['arch'], 'Commercial confirmation form unavailable'
 assert 'action_quote_purchase' in form['arch'], 'Pricing review form unavailable'
+assert 'action_open_price_override' in form['arch'], 'Price override form unavailable'
 user = rpc('/web/dataset/call_kw/res.users/read', {
     'model': 'res.users', 'method': 'read', 'args': [[session['uid']], ['company_id']], 'kwargs': {},
 })[0]

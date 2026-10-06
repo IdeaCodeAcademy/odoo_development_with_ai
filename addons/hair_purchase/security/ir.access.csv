@@ -5,3 +5,4 @@ access_hair_pricing_rule_user,hair.pricing.rule.user,model_hair_pricing_rule,hai
 access_hair_pricing_rule_manager,hair.pricing.rule.manager,model_hair_pricing_rule,hair_base.hair_base_group_manager,cru,
 access_hair_purchase_quality,hair.purchase.quality,model_hair_purchase,hair_purchase_group_quality,ru,
 access_hair_purchase_line_quality,hair.purchase.line.quality,model_hair_purchase_line,hair_purchase_group_quality,ru,
+access_hair_price_override_wizard_manager,hair.price.override.wizard.manager,model_hair_price_override_wizard,hair_supplier.hair_supplier_group_manager,crud,

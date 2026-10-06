@@ -26,10 +26,30 @@ cancellation path. Buyers and Quality Officers cannot confirm/cancel.
 
 These actions use company access rules, private action-only snapshot writes and
 ORM row locks. Standard chatter tracks confirmation/cancellation. No payments,
-accounting entries or stock movements are created by this feature. Price override
-and its audit interface are still pending.
+accounting entries or stock movements are created by this feature. Manager price overrides are implemented as described below.
 
-Nine automated tests cover snapshots/retries, rule/name/bounds/currency changes,
+Fourteen automated tests cover snapshots/retries, rule/name/bounds/currency changes,
 missing approval/pricing, quote review/staleness/reset, protected input and snapshot forgery, role isolation,
 reasoned cancellation and foreign-company actions. Only synthetic test rates are
 used; no real or sample rates are activated in hair_demo.
+
+## Manager price override
+
+On the Commercial tab, Manager/Admin can open Override Price on a quoted line,
+enter a positive finite per-kg rate and a mandatory reason. Only approved,
+freshly quoted inspection purchases can be overridden. A changed base rule,
+classification or company currency requires Compute Price and another review.
+
+Protected line fields retain the matrix base rate, latest actor, timestamp and
+reason. Every rate change posts the previous/new rate, currency, line and reason
+to standard Odoo chatter, whose author and timestamp provide the audit trail.
+Repeated application of the current rate is a no-op. Repeated negotiated changes
+retain the original matrix rate and each chatter entry. No custom duplicate
+audit model, sudo, context bypass or raw SQL is needed.
+
+Confirmation preserves the negotiated rate and rounded amount while checking
+that the underlying matrix rule remains applicable and unchanged. Repricing or
+returning to draft clears the current override provenance; chatter history
+remains. Copies start without overrides. Confirmed/terminal prices cannot be
+overridden. Buyer, Quality Officer and public calls, forged provenance/defaults,
+foreign-company access and unauthorized wizard creation are tested.
