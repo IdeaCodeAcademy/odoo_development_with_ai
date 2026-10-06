@@ -20,9 +20,19 @@
 - Removed internal-user sudo from partner location updates.
 - Five automated tests cover location access/company isolation and theme ownership.
 
-## Phase 1 - Hair Base
+## Phase 1 - Hair Base - Complete
 
-Implementation and tests are ready; recorded in the next feature commit.
+- hair_base provides type, texture, color, grade and length configuration,
+  list/form/search views, menus, ordering and archive behavior.
+- Company-specific permissions use the installed Odoo 20 unified ir.access API.
+- Readers cannot mutate; configuration admins create/update/archive, not delete.
+- Public/unrelated internal users are denied; company reads/creates/writes and
+  attempted unauthorized company-context changes are tested.
+- Company reassignment is checked before write; Odoo 20 constraints run in sudo.
+- Length validation rejects negative, infinite and reversed bounds.
+- Eight automated tests cover configuration, bounds, access controls and views.
+- Installed in hair_demo with illustrative master data; Hair Types/Virgin Hair
+  verified in browser, and authenticated demo checks pass.
 
 ## Latest validation
 

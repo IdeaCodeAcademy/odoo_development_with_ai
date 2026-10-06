@@ -1,0 +1,11 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_hair_type_user,hair.type.user,model_hair_type,hair_base_group_user,r,
+access_hair_type_manager,hair.type.manager,model_hair_type,hair_base_group_manager,cru,
+access_hair_texture_user,hair.texture.user,model_hair_texture,hair_base_group_user,r,
+access_hair_texture_manager,hair.texture.manager,model_hair_texture,hair_base_group_manager,cru,
+access_hair_color_user,hair.color.user,model_hair_color,hair_base_group_user,r,
+access_hair_color_manager,hair.color.manager,model_hair_color,hair_base_group_manager,cru,
+access_hair_grade_user,hair.grade.user,model_hair_grade,hair_base_group_user,r,
+access_hair_grade_manager,hair.grade.manager,model_hair_grade,hair_base_group_manager,cru,
+access_hair_length_user,hair.length.user,model_hair_length,hair_base_group_user,r,
+access_hair_length_manager,hair.length.manager,model_hair_length,hair_base_group_manager,cru,

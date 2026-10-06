@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hair_type_rule_company" model="ir.access">
+        <field name="name">hair.type.rule.company</field>
+        <field name="model_id" ref="model_hair_type"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="hair_texture_rule_company" model="ir.access">
+        <field name="name">hair.texture.rule.company</field>
+        <field name="model_id" ref="model_hair_texture"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="hair_color_rule_company" model="ir.access">
+        <field name="name">hair.color.rule.company</field>
+        <field name="model_id" ref="model_hair_color"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="hair_grade_rule_company" model="ir.access">
+        <field name="name">hair.grade.rule.company</field>
+        <field name="model_id" ref="model_hair_grade"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="hair_length_rule_company" model="ir.access">
+        <field name="name">hair.length.rule.company</field>
+        <field name="model_id" ref="model_hair_length"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

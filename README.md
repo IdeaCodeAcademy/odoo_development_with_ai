@@ -40,3 +40,23 @@ data when containers stop. Avoid removing these volumes if you need the data.
 - [Implementation state](docs/STATE.md)
 
 Read these documents before working on the project.
+
+## Demo and tests
+
+The local demo database is `hair_demo`, with `hair_base` and
+`ica_web_responsive` installed. Open http://localhost:8071/web/login?db=hair_demo.
+Admin login credentials are in the local, Git-ignored `.demo_credentials` file.
+
+```bash
+python3 scripts/check_environment.py
+python3 scripts/check_demo.py
+python3 scripts/test_addons.py
+```
+
+Tests create a unique `hair_test_*` database each run and retain it for diagnosis.
+They do not use the demo database. Test logs are stored in the host temporary
+directory. Restart the web container after installing/updating addons using a
+one-off container so its Python registry loads the new code.
+
+See [Hair Base usage](docs/HAIR_BASE.md) and
+[third-party addon provenance](docs/THIRD_PARTY.md).

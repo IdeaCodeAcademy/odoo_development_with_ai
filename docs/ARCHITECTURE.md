@@ -4,7 +4,7 @@
 
 Odoo 20.0 Community and PostgreSQL 16 run through Docker Compose. Custom
 modules live under `addons/`. Odoo core remains unmodified. Business logic uses
-ORM methods, constraints, ACLs and record rules; raw SQL needs documented
+ORM methods, constraints and Odoo access controls; raw SQL needs documented
 justification. Check version-dependent APIs against the installed Odoo source.
 
 ## Modules and dependency direction
@@ -60,6 +60,7 @@ with database uniqueness and concurrency protection where needed.
 Separate models: hair.type, hair.texture, hair.color, hair.grade and hair.length.
 Each record has required company, name, ordering and active status. No seed
 prices or mandatory classifications are inferred from illustrative examples.
+Demo-only records provide illustrative type, texture, color, grade and length.
 Archive unused configuration rather than removing history. Future transaction
 relations use ondelete='restrict' and check_company=True.
 
@@ -70,7 +71,11 @@ context does not exist yet; Phase 4 enforces rule-context non-overlap.
 
 Hair users read master data; configuration administrators create/update/archive
 it. No deletion permission is granted. Administrators inherit configuration
-access. Global company rules apply to all five models; no public/portal ACLs.
+access. The installed Odoo 20 build uses unified ir.access permissions/restrictions
+(instead of ir.model.access/ir.rule). ir.access.csv grants read to users and
+create/read/update to configuration administrators. Global company restrictions
+apply to all five models; no public/portal permissions. Company reassignment is
+authorized before write because Odoo 20 runs constraints with sudo.
 Buyer, quality, cashier, warehouse and branch authority are introduced in the
 owning transactional modules after their policies are defined.
 

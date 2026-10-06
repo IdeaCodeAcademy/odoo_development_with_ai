@@ -221,3 +221,4 @@ __marimo__/
 odoo_pg_pass
 config/
 .idea/
+.demo_credentials

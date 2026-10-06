@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="hair_type_demo" model="hair.type">
+        <field name="name">Virgin Hair</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hair_texture_demo" model="hair.texture">
+        <field name="name">Straight</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hair_color_demo" model="hair.color">
+        <field name="name">Natural Black</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hair_grade_demo" model="hair.grade">
+        <field name="name">Grade A</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hair_length_demo" model="hair.length">
+        <field name="name">10–14 inches (Demo)</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="length_min">10</field>
+        <field name="length_max">14</field>
+    </record>
+</odoo>
