@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_hair_purchase" model="ir.sequence">
+        <field name="name">Hair Purchase</field>
+        <field name="code">hair.purchase</field>
+        <field name="prefix">HP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

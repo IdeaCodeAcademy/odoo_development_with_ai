@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hair_purchase_view_list" model="ir.ui.view">
+        <field name="name">hair.purchase.list</field><field name="model">hair.purchase</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/><field name="date"/><field name="seller_id"/><field name="buyer_id"/><field name="payable_weight"/><field name="company_id" groups="base.group_multi_company"/><field name="state"/></list>
+        </field>
+    </record>
+    <record id="hair_purchase_view_form" model="ir.ui.view">
+        <field name="name">hair.purchase.form</field><field name="model">hair.purchase</field>
+        <field name="arch" type="xml">
+            <form>
+                <header><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group><group><field name="company_id"/><field name="seller_id"/><field name="buyer_id"/></group><group><field name="date"/><field name="currency_id"/><field name="payable_weight"/></group></group>
+                    <notebook><page string="Hair and Weights" name="hair_weights">
+                        <field name="line_ids"><list editable="bottom">
+                            <field name="company_id" column_invisible="True"/>
+                            <field name="sequence" widget="handle"/><field name="description"/>
+                            <field name="hair_type_id"/><field name="texture_id" optional="hide"/><field name="color_id" optional="hide"/><field name="length_id"/>
+                            <field name="gross_weight"/><field name="tare_weight"/><field name="waste_weight"/><field name="moisture_weight"/><field name="other_weight"/><field name="payable_weight"/>
+                        </list></field>
+                    </page><page string="Notes" name="notes"><field name="notes"/></page></notebook>
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="hair_purchase_view_search" model="ir.ui.view">
+        <field name="name">hair.purchase.search</field><field name="model">hair.purchase</field>
+        <field name="arch" type="xml"><search><field name="name"/><field name="seller_id"/><field name="buyer_id"/><filter name="purchase_date" string="Date" date="date"/><filter name="group_seller" string="Seller" context="{'group_by': 'seller_id'}"/><filter name="group_buyer" string="Buyer" context="{'group_by': 'buyer_id'}"/></search></field>
+    </record>
+    <record id="hair_purchase_action" model="ir.actions.act_window">
+        <field name="name">Hair Intakes</field><field name="res_model">hair.purchase</field><field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="hair_purchase_menu" name="Hair Intakes" parent="hair_base.hair_base_menu_root" action="hair_purchase_action" sequence="5" groups="hair_supplier.hair_supplier_group_buyer"/>
+</odoo>

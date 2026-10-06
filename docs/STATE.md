@@ -42,15 +42,32 @@
 - Company isolation and unrelated contact permissions tested.
 - Purchase history/statistics remain dependent on hair_purchase.
 
+## Phase 3 - Draft Intake and Weight Feature - Complete
+
+- hair_purchase provides draft headers, unique sequences and multiple hair lines.
+- User confirmed kg at 0.001 kg (1 g) scale resolution; three decimal places.
+- Gross less tare/waste/moisture/other deductions computes payable kg and totals.
+- Server validation rejects negative/nonfinite weights and excessive deductions.
+- Company isolation, relation integrity and forged calculated values are tested.
+- Seven intake tests cover calculations, validation, permissions and view loading.
+- Inspection submission/confirmation and commercial effects are not implemented.
+
 ## Latest validation
 
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 22 executed tests
-  (20 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_0c1b9c2fbd98.
-- Environment and authenticated demo checks pass.
+- `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 29 executed tests
+  (27 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_d27b8623f932.
+- Installed in hair_demo; browser Hair Intakes list verified. Environment and
+  authenticated demo checks passed.
 
-## Next work
+## Next work and delegated workflow policy
 
-Phase 3 draft intake and weights. User specified kilograms. Scale resolution
-is pending clarification; development precision is configurable, initially 3
-kg decimal places. Commercial confirmation awaits pricing/quality policy.
+User authorized suitable commercial/quality policy. Manager/Admin will confirm,
+override prices (with a reason) and cancel. Quality Officer will approve final
+grades. Confirmation requires seller, positive payable kg, hair type, length,
+approved grade and a valid pricing rule. Implement these server-enforced actions
+in later workflow features; this authorization resolves the role-policy blocker.
+
+Next: configurable company/type/grade/length/date pricing rule selection. Real
+rates and company currency are business configuration and will not be invented.

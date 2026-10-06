@@ -956,3 +956,19 @@ Administrators may view NRC/identification information. NRC is optional and
 protected through Odoo field-level access, including ORM read/write, search,
 import and view exposure. Existing contact permissions alone do not grant hair
 seller management. Seller statistics/history follow once purchases exist.
+
+## 35. Confirmed weight unit and resolution
+
+The user specified kilograms, with scale resolution **0.001 kg (1 g)**.
+Intake gross, tare, waste, moisture and other deduction weights use three kg
+decimal places. Net/payable kg equals gross minus all deductions. Pricing rates
+will be expressed per kg; earlier gram examples are illustrative only.
+
+## 36. Delegated commercial and quality policy
+
+The user authorized choosing a suitable policy: Manager/Admin may confirm,
+override prices with a mandatory reason, and cancel purchases. Quality Officer
+approves final grades. Confirmation requires a seller, positive payable kg,
+hair type, length, approved grade and an applicable pricing rule. Additional
+quality criteria remain configurable; no arbitrary damage/moisture thresholds
+are inferred. Real company currency/rates must come from business configuration.

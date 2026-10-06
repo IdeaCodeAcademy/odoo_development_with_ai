@@ -1,0 +1,3 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_hair_purchase_buyer,hair.purchase.buyer,model_hair_purchase,hair_supplier.hair_supplier_group_buyer,cru,
+access_hair_purchase_line_buyer,hair.purchase.line.buyer,model_hair_purchase_line,hair_supplier.hair_supplier_group_buyer,crud,

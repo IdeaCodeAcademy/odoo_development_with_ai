@@ -94,6 +94,17 @@ and stop-after-init, without exposing the test container's HTTP port.
 - Which roles may confirm, override prices, cancel or correct purchases?
 - Are receipts allowed before full payment, and what is the reversal policy?
 - Are branches enabled initially, and how are users assigned to branches?
-- Weight unit resolved: kg. Scale precision, currency, real rates and effective dates need configuration.
+- Weight unit resolved: kg. Resolution confirmed: 0.001 kg (1 g). Currency, real rates and effective dates need configuration.
 
 These decisions gate the affected features, not independent foundation work.
+
+## Implemented draft intake
+
+Weights use fixed three-decimal kg precision as confirmed by the user. Drafts
+use company currency and generated references, support multiple lines and
+standard mail attachments. Calculated quantities are protected from direct
+write/import. Changing company after adding lines is prohibited. Only draft
+state is implemented until pricing/quality and commercial action policies are
+ready; no financial or stock effects occur.
+
+Ruff uses the Odoo runbot configuration in ruff.toml and must pass before commits.
