@@ -28,7 +28,7 @@ its tests fail. Outstanding business decisions are tracked in STATE.md.
 ## Current feature progress
 
 - Phase 0 and Phase 1 are complete.
-- Phase 2 seller foundation is complete; purchase statistics/history remain.
+- Phase 2 seller foundation and intake history are complete; confirmed purchase/value statistics remain.
 - Phase 3 draft intake and kg weight feature is complete; inspection submission
   depends on the quality workflow.
 - Phase 4 pricing configuration, selection and private quote calculation are

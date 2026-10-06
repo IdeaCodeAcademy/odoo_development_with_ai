@@ -122,3 +122,11 @@ and configuration-admin mutation permissions are enforced. Rates have no fixed
 quantity precision; payable weights remain three-decimal kg quantities. No real
 rates are seeded. Quote application, confirmation snapshots and override audit
 remain distinct pending features.
+
+## Seller intake history
+
+hair_purchase extends res.partner with a seller-filtered intake action and grouped
+nonstored count/payable kg/last-date metrics. The grouped ORM query runs without
+sudo; fields and action require Buyer access. Dependencies invalidate totals when
+intakes, line weights or seller/date change. Draft metrics are labeled as intakes;
+confirmed purchased-weight/value statistics belong to the later commercial flow.

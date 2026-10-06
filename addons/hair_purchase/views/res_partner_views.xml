@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_view_form_hair_intake" model="ir.ui.view">
+        <field name="name">res.partner.form.hair.intake.history</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="hair_supplier.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_hair_intakes" type="object" class="oe_stat_button" icon="fa-shopping-basket" groups="hair_supplier.hair_supplier_group_buyer" invisible="not hair_is_seller">
+                    <field name="hair_intake_count" widget="statinfo" string="Intakes"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='hair_seller']/group" position="inside">
+                <field name="hair_intake_weight" invisible="not hair_is_seller"/>
+                <field name="hair_last_intake_date" invisible="not hair_is_seller"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

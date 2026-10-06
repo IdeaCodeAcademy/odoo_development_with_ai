@@ -52,3 +52,12 @@ The private quote API selects the rule and returns its identifier, per-kg rate,
 currency and currency-rounded amount (payable kg × rate). It rejects zero,
 negative and nonfinite payable kg. This prepares later confirmation snapshots;
 returned quotes are not yet applied to intake records.
+
+## Seller intake history
+
+The module extends the seller form with intake count, total payable kg and last
+intake date, plus an Intakes smart button. A grouped ORM query applies the caller's
+access restrictions; no sudo is used. Four tests cover fresh/corrected totals,
+seller reassignment, action filters/defaults, forbidden field/action access and
+foreign-company isolation. These are intake metrics, including drafts; confirmed
+purchase/value statistics remain dependent on the commercial workflow.

@@ -41,7 +41,8 @@
 - res.partner extension, configurable seller types and menus installed in hair_demo.
 - NRC protection verified for views, ORM reads/writes/search and imports.
 - Company isolation and unrelated contact permissions tested.
-- Purchase history/statistics remain dependent on hair_purchase.
+- Seller intake history is implemented by hair_purchase; confirmed purchase/value
+  statistics still depend on the commercial workflow.
 
 ## Phase 3 - Draft Intake and Weight Feature - Complete
 
@@ -65,14 +66,23 @@
 - Intake quote application, historical confirmation snapshots and override audit
   remain pending; the entire Pricing Engine phase is not declared complete.
 
+## Seller Intake History Feature - Complete
+
+- Seller form shows Intakes button, intake count, total payable kg and last date.
+- Draft intakes are explicitly labeled; no claim of confirmed purchases/payments.
+- Grouped ORM aggregation uses caller permissions without sudo.
+- Buyer/Manager/Admin field/action access enforced; foreign sellers denied.
+- Four tests cover updates, reassignment, action defaults and security.
+
 ## Latest validation
 
 - `ruff check .`: all checks passed, using the Odoo runbot rule configuration.
-- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 37 executed tests
-  (35 custom and 2 automatically selected web cases).
-- Isolated test database: hair_test_a22eeb855662.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 41 executed tests
+  (39 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_5af82a70ac17.
 - hair_purchase installed/updated in hair_demo; Hair Intakes list browser-verified.
-- Environment and authenticated demo checks passed after pricing update.
+- Environment and authenticated demo checks passed after history update.
+- Demo history fields and seller-filtered action verified through authenticated RPC.
 
 ## Delegated workflow policy
 
@@ -92,4 +102,4 @@ values has been sent. Currency was answered as MMK; rates/dates are still missin
 Supply the rate table (or explicitly authorize illustrative demo-only
 pricing) to activate and verify the commercial workflow against business pricing.
 Remaining work includes applying quotes, quality approval/submission, confirmation
-snapshots/override audit, seller statistics, and later roadmap phases.
+snapshots/override audit, confirmed seller purchase/value statistics, and later roadmap phases.

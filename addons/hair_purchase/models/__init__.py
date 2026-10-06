@@ -1,1 +1,1 @@
-from . import hair_pricing_rule, hair_purchase
+from . import hair_pricing_rule, hair_purchase, res_partner

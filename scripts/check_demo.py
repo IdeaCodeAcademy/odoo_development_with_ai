@@ -33,6 +33,16 @@ seller_count = rpc('/web/dataset/call_kw/res.partner/search_count', {
     'args': [[('hair_is_seller', '=', True)]], 'kwargs': {},
 })
 assert seller_count >= 1, 'Demo seller not found'
+sellers = rpc('/web/dataset/call_kw/res.partner/search_read', {
+    'model': 'res.partner', 'method': 'search_read',
+    'args': [[('hair_is_seller', '=', True)]],
+    'kwargs': {'fields': ['hair_intake_count', 'hair_intake_weight', 'hair_last_intake_date'], 'limit': 1},
+})
+assert sellers and sellers[0]['hair_intake_count'] >= 0, 'Intake history fields unavailable'
+action = rpc('/web/dataset/call_kw/res.partner/action_view_hair_intakes', {
+    'model': 'res.partner', 'method': 'action_view_hair_intakes', 'args': [[sellers[0]['id']]], 'kwargs': {},
+})
+assert action['domain'] == [['seller_id', '=', sellers[0]['id']]], 'Seller history filter incorrect'
 user = rpc('/web/dataset/call_kw/res.users/read', {
     'model': 'res.users', 'method': 'read', 'args': [[session['uid']], ['company_id']], 'kwargs': {},
 })[0]
