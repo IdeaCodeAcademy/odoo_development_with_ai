@@ -1,0 +1,3 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_hair_seller_type_user,hair.seller.type.user,model_hair_seller_type,hair_base.hair_base_group_user,r,
+access_hair_seller_type_manager,hair.seller.type.manager,model_hair_seller_type,hair_base.hair_base_group_manager,cru,

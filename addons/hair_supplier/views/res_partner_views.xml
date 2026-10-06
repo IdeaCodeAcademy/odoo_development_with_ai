@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.hair.supplier</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page name="hair_seller" string="Hair Seller" groups="hair_supplier.hair_supplier_group_buyer">
+                    <group>
+                        <field name="hair_is_seller"/>
+                        <field name="hair_seller_type_id" invisible="not hair_is_seller"/>
+                        <field name="hair_alternative_phone" invisible="not hair_is_seller"/>
+                        <field name="hair_township" invisible="not hair_is_seller"/>
+                        <field name="hair_identification" groups="hair_supplier.hair_supplier_group_manager" invisible="not hair_is_seller"/>
+                        <field name="hair_seller_notes" invisible="not hair_is_seller"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="res_partner_view_list_hair_seller" model="ir.ui.view">
+        <field name="name">res.partner.view.list.hair.seller</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="hair_seller_type_id"/>
+                <field name="hair_township"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="res_partner_view_search_hair_seller" model="ir.ui.view">
+        <field name="name">res.partner.view.search.hair.seller</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="hair_township"/>
+                <field name="hair_seller_type_id"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <filter name="seller_type" string="Seller Type" context="{'group_by': 'hair_seller_type_id'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="res_partner_action_hair_seller" model="ir.actions.act_window">
+        <field name="name">Sellers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="res_partner_view_list_hair_seller"/>
+        <field name="search_view_id" ref="res_partner_view_search_hair_seller"/>
+        <field name="domain">[('hair_is_seller', '=', True)]</field>
+        <field name="context">{'default_hair_is_seller': True, 'default_company_id': allowed_company_ids[0]}</field>
+    </record>
+    <menuitem id="res_partner_menu_hair_seller" name="Sellers" parent="hair_base.hair_base_menu_root" action="res_partner_action_hair_seller" groups="hair_supplier.hair_supplier_group_buyer" sequence="5"/>
+</odoo>

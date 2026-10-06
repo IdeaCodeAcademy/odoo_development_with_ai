@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="hair_seller_type_individual_demo" model="hair.seller.type">
+        <field name="name">Individual Seller</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hair_seller_demo" model="res.partner">
+        <field name="name">Demo Hair Seller</field>
+        <field name="hair_is_seller" eval="True"/>
+        <field name="hair_seller_type_id" ref="hair_seller_type_individual_demo"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="hair_seller_notes">Illustrative seller; not a real person.</field>
+    </record>
+</odoo>

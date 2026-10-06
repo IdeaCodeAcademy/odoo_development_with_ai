@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hair_supplier_privilege" model="res.groups.privilege">
+        <field name="name">Hair Sellers</field>
+        <field name="category_id" ref="hair_base.hair_base_category"/>
+    </record>
+    <record id="hair_supplier_group_buyer" model="res.groups">
+        <field name="name">Buyer</field>
+        <field name="privilege_id" ref="hair_supplier_privilege"/>
+        <field name="implied_ids" eval="[Command.link(ref('hair_base.hair_base_group_user'))]"/>
+    </record>
+    <record id="hair_supplier_group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="privilege_id" ref="hair_supplier_privilege"/>
+        <field name="implied_ids" eval="[Command.link(ref('hair_supplier_group_buyer'))]"/>
+    </record>
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('hair_supplier_group_manager'))]"/>
+    </record>
+</odoo>

@@ -948,3 +948,11 @@ and ROADMAP.md. Example classifications, prices and payment providers are
 illustrations, not mandatory seed data. Phase 1 may proceed with configurable
 master data; permissions for seller identity and later commercial actions need
 explicit business policy before those features are implemented.
+
+## 34. Confirmed seller authorization policy
+
+The user specified that Buyers may create/edit sellers, while Managers and
+Administrators may view NRC/identification information. NRC is optional and
+protected through Odoo field-level access, including ORM read/write, search,
+import and view exposure. Existing contact permissions alone do not grant hair
+seller management. Seller statistics/history follow once purchases exist.

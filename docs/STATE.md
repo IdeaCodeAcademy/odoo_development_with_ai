@@ -34,19 +34,23 @@
 - Installed in hair_demo with illustrative master data; Hair Types/Virgin Hair
   verified in browser, and authenticated demo checks pass.
 
+## Phase 2 - Seller Management - Complete foundation
+
+- Buyer creates/edits/archives sellers; Manager/Admin accesses optional NRC.
+- res.partner extension, configurable seller types and menus installed in hair_demo.
+- NRC protection verified for views, ORM reads/writes/search and imports.
+- Company isolation and unrelated contact permissions tested.
+- Purchase history/statistics remain dependent on hair_purchase.
+
 ## Latest validation
 
-- `python3 scripts/test_addons.py`: exit 0, 0 failed, 0 errors, 15 executed
-  tests (13 custom tests and 2 automatically selected web suite cases).
-- Test database: hair_test_6e09cdc90408; isolated from hair_demo.
-- `python3 scripts/check_environment.py`: passed.
-- `python3 scripts/check_demo.py`: authentication, installed modules and web passed.
-- `git diff --check`: passed.
-- Test databases are retained for diagnosis; no business database was changed.
+- scripts/test_addons.py: exit 0, 0 failed, 0 errors, 22 executed tests
+  (20 custom and 2 automatically selected web cases).
+- Isolated test database: hair_test_0c1b9c2fbd98.
+- Environment and authenticated demo checks pass.
 
-## Phase 2 policy and next work
+## Next work
 
-User specified: Buyer can create/edit sellers; Manager/Admin can view NRC.
-This policy resolves the seller authorization question. Implement hair_supplier
-next, retaining company isolation and field-level NRC protection. Purchase
-history/statistics depend on hair_purchase and will be added there.
+Phase 3 draft intake and weights. User specified kilograms. Scale resolution
+is pending clarification; development precision is configurable, initially 3
+kg decimal places. Commercial confirmation awaits pricing/quality policy.

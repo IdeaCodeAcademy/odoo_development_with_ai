@@ -24,7 +24,12 @@ password = credentials.split('Password: ', 1)[1].strip()
 session = rpc('/web/session/authenticate', {'db': 'hair_demo', 'login': 'admin', 'password': password})
 assert session.get('uid'), 'Demo authentication failed'
 modules = rpc('/web/session/modules', {})
-assert {'hair_base', 'ica_web_responsive'}.issubset(modules), 'Required addons not installed'
+assert {'hair_base', 'hair_supplier', 'ica_web_responsive'}.issubset(modules), 'Required addons not installed'
+seller_count = rpc('/web/dataset/call_kw/res.partner/search_count', {
+    'model': 'res.partner', 'method': 'search_count',
+    'args': [[('hair_is_seller', '=', True)]], 'kwargs': {},
+})
+assert seller_count >= 1, 'Demo seller not found'
 with opener.open(base_url + '/odoo', timeout=30) as response:
     assert response.status == 200
 print('Demo authentication, installed addons and web page checks passed')

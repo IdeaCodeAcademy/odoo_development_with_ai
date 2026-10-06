@@ -89,11 +89,11 @@ and stop-after-init, without exposing the test container's HTTP port.
 
 ## Decisions required before later features
 
-- Which roles may create/edit sellers and view NRC/identification information?
+- Seller policy resolved: Buyers create/edit; Managers/Admin access NRC.
 - Which inspection criteria are required, and who approves the final grade?
 - Which roles may confirm, override prices, cancel or correct purchases?
 - Are receipts allowed before full payment, and what is the reversal policy?
 - Are branches enabled initially, and how are users assigned to branches?
-- Which weight precision/UoM, currency, real rates and effective dates apply?
+- Weight unit resolved: kg. Scale precision, currency, real rates and effective dates need configuration.
 
 These decisions gate the affected features, not independent foundation work.
