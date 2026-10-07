@@ -19,3 +19,10 @@ There are no real price rules, sellers, purchases or payments yet.
 
 Run `python3 scripts/test_addons.py` for validation, permission, company
 isolation and view tests in a fresh test database.
+
+## Application icon
+
+Hair Purchasing uses a bundled 256 × 256 PNG hair-bundle icon in the application
+launcher. The standard menu web_icon attribute loads it; existing menu groups
+and access permissions apply. Upgrade hair_base and reload the browser to refresh
+the cached launcher image.

@@ -101,3 +101,13 @@ search_view = rpc('/web/dataset/call_kw/hair.purchase/get_view', {
 })
 assert all(token in search_view['arch'] for token in ('Seller Phone', 'Hair Type', 'Grade', 'Length', 'commercial_purchases', 'outstanding_payments', 'group_payment')), 'Purchase search filters unavailable'
 _logger.info('Purchase search view passed')
+
+menus = rpc('/web/dataset/call_kw/ir.ui.menu/search_read', {
+    'model': 'ir.ui.menu', 'method': 'search_read',
+    'args': [[('web_icon', '=', 'hair_base,static/description/icon.png')]],
+    'kwargs': {'fields': ['web_icon_data']},
+})
+assert menus and menus[0]['web_icon_data'], 'Hair application icon unavailable'
+with opener.open(base_url + '/hair_base/static/description/icon.png', timeout=15) as response:
+    assert response.read(8) == b'\x89PNG\r\n\x1a\n', 'Hair application image unavailable'
+_logger.info('Hair application icon passed')

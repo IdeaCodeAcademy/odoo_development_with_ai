@@ -1,3 +1,7 @@
+import io
+
+from PIL import Image
+
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
@@ -116,3 +120,11 @@ class TestHairMasterData(TransactionCase):
             self.env[model].with_user(self.reader).get_views(
                 [(False, 'list'), (False, 'form'), (False, 'search')], {},
             )
+
+    def test_application_menu_icon_loads(self):
+        menu = self.env.ref('hair_base.hair_base_menu_root')
+        self.assertEqual(menu.web_icon, 'hair_base,static/description/icon.png')
+        self.assertTrue(menu.web_icon_data)
+        with Image.open(io.BytesIO(bytes(menu.web_icon_data))) as icon:
+            self.assertEqual(icon.format, 'PNG')
+            self.assertEqual(icon.size, (256, 256))

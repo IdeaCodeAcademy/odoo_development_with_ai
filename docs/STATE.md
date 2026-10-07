@@ -242,3 +242,13 @@ optional accounting, processing, dashboards and later roadmap phases.
   web service released pooled connections, and the fresh isolated rerun passed.
 - Branch and inventory-lot search remain pending. Existing missing real rates,
   reversal policy and later processing/quality/dashboard work remain unchanged.
+
+## Hair Purchasing application menu icon
+
+- Original bundled hair-bundle PNG (256 × 256) assigned through standard menu
+  web_icon; application/module icon uses static/description/icon.png.
+- Existing menu groups unchanged. Automated icon test verifies stored image
+  decoding, format and dimensions; targeted hair_base suite: nine tests, zero
+  failures/errors in hair_test_ae85946a862f. Ruff passes.
+- Demo upgraded; authenticated menu-image and static PNG smoke checks verified.
+- Odoo 20 binary fields return BinaryBytes; test reads raw image bytes.

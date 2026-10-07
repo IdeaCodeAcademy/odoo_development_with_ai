@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="hair_base_menu_root" name="Hair Purchasing" groups="hair_base_group_user" sequence="10"/>
+    <menuitem id="hair_base_menu_root" name="Hair Purchasing" web_icon="hair_base,static/description/icon.png" groups="hair_base_group_user" sequence="10"/>
     <menuitem id="hair_base_menu_configuration" name="Configuration" parent="hair_base_menu_root" sequence="90"/>
     <menuitem id="hair_type_menu" name="Types" parent="hair_base_menu_configuration" action="hair_type_action" sequence="10"/>
     <menuitem id="hair_texture_menu" name="Textures" parent="hair_base_menu_configuration" action="hair_texture_action" sequence="11"/>
